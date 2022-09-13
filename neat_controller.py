@@ -1,25 +1,25 @@
 from controller import Controller
 import neat
+import os
 
 
 class NeatController(Controller):
-
-    def __int__(self):
-
-        config_filepath = 'neat_config.txt'
+    def __init__(self):
+        local_dir = os.path.dirname(__file__)
+        config_file = os.path.join(local_dir, "neat_config.txt")
         configuration = neat.config.Config(
             neat.DefaultGenome,
             neat.DefaultReproduction,
             neat.DefaultSpeciesSet,
             neat.DefaultStagnation,
-            config_filepath
+            config_file,
         )
         self.configuration = configuration
 
-    def control(self, sensor_values, genome):
-        neuralnet = neat.nn.FeedForwardNetwork.create(genome, self.configuration)
-        output = neuralnet.activate(sensor_values)
-
+    def control(self, sensor_data, genome):
+        net = neat.nn.FeedForwardNetwork.create(genome, self.configuration)
+        output = net.activate(sensor_data)
+        # takes decisions about sprite actions
         if output[0] > 0.5:
             left = 1
         else:
