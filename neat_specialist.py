@@ -2,8 +2,8 @@ import sys
 
 sys.path.insert(0, 'evoman')
 from environment import Environment
-from evoman_framework_Group10.demo_controller import player_controller
-from evoman_framework_Group10.neat_controller import NeatController
+from demo_controller import player_controller
+from neat_controller import NeatController
 
 # imports other libs
 import time
@@ -53,13 +53,15 @@ def eval_genomes(genomes, config):
         genome.fitness = simulation(env, genome)
 
 
-def run(config_path):
+def run(configuration_filepath):
     # Load the confih file (neat_config)
-    neat_config = os.path.dirname('evoman_framework_Group10.neat_config.txt')
-    config_path = os.path.join(neat_config, 'neat_config.txt')
-    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         config_path)
+
+    config = neat.Config(
+        neat.DefaultGenome,
+        neat.DefaultReproduction,
+        neat.DefaultSpeciesSet,
+        neat.DefaultStagnation,
+        configuration_filepath)
 
     pop = neat.Population(config)
 
@@ -83,3 +85,32 @@ if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'neat_config.txt')
     run(config_path)
+
+
+    N_runs = 10
+
+    experiment_name = "Neat_enemies_78"
+    # create directory if it does not exist yet
+    if not os.path.exists(experiment_name):
+        os.makedirs(experiment_name)
+
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, 'neat_config.txt')
+    #run(config_path)
+
+
+    # initializes simulation in individual evolution mode, for single static enemy.
+    env = Environment(
+        experiment_name=experiment_name,
+        enemies=[7, 8],
+        playermode="ai",
+        player_controller=NeatController(),
+        enemymode="static",
+        level=2,
+        speed="fastest",
+        multiplemode="yes",
+        randomini="yes",
+    )
+
+    run(config_path)
+    # default environment fitness is assumed for experiment
