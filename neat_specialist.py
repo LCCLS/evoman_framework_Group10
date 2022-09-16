@@ -18,6 +18,15 @@ def simulation(env, x):
     return f
 
 
+def custom_fitness(env, x, gamma=0.9, alpha=0.1):
+    """
+    this is a custom function with default keyword parameters, change these for experiment
+    """
+    f, p, e, t = env.play(pcont=x)
+    fitness = gamma * (100-e) + alpha * p - np.log(t)
+    return fitness
+
+
 def eval_genomes(genomes, config):
     generation = []
     global gen
