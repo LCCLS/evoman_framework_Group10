@@ -6,7 +6,9 @@ import statistics
 import sys
 import time
 
-sys.path.insert(0, '../evoman')
+import pandas as pd
+
+sys.path.insert(0, 'evoman')
 from environment import Environment
 from neat_controller import NeatController
 
@@ -90,7 +92,7 @@ def run(configuration_filepath):
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(5))  # this loads checkpoints for every 5 generations
     # runnning for n generations
-    winner = pop.run(eval_genomes, 40)
+    winner = pop.run(eval_genomes, 1)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -122,20 +124,19 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
     total_performance['e'] = total_performance['e'] / 10
     total_performance['t'] = total_performance['t'] / 10
 
-    performance_result = f"Best Genome fitness: {total_performance['f']}\n" \
-                         f"Best Genome Player Health:{total_performance['p']}\n" \
-                         f"Best Genome Enemy Health:{total_performance['e']}\n" \
-                         f"Best Genome time played:{total_performance['t']}\n"
+    performance_result = [[total_performance['f'], total_performance['p'], total_performance['e'], total_performance['t']]]
+    #performance_df_2 = pd.DataFrame(total_performance)
+    performance_df = pd.DataFrame(performance_result, columns=['fitness', 'player_health', 'enemy_health', 'time'])
     print(f"""
 -------------------------------------------------------------------------------------------------------------------
-    {performance_result}
+    f"Best Genome fitness: {total_performance['f']}\n" \
+                             f"Best Genome Player Health:{total_performance['p']}\n" \
+                             f"Best Genome Enemy Health:{total_performance['e']}\n" \
+                             f"Best Genome time played:{total_performance['t']}\n"
 -------------------------------------------------------------------------------------------------------------------
 
     """)
-
-    file_performance = open(f"{dir_path}_performance" + "/best_genome_performance", "a")
-    file_performance.write(f"Best genome performance:\n{performance_result}")
-    file_performance.close()
+    performance_df.to_csv(f"{dir_path}_performance" + "/best_genome_performance.csv")
 
 
 if __name__ == '__main__':
@@ -152,8 +153,8 @@ if __name__ == '__main__':
     for enemy in all_enemies:
 
         ### parameters for the experiment###
-        experiment_name = f"NEAT_ENEMY_{enemy}"
-        N_runs = 10
+        experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
+        N_runs = 1
 
         if not os.path.exists(experiment_name):
             os.makedirs(experiment_name)
@@ -183,7 +184,7 @@ if __name__ == '__main__':
             fitness_std = []
             gen = 0
 
-            run('neat_config.txt')
+            run(config_path)
 
         for i in range(N_runs):
 
