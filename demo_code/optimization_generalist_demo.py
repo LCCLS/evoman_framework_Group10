@@ -7,15 +7,14 @@
 
 # imports framework
 import sys
-sys.path.insert(0, 'evoman')
+sys.path.insert(0, '../evoman')
 from environment import Environment
-from demo_controller import player_controller
+from demo_code.demo_controller import player_controller
 
 # imports other libs
 import time
 import numpy as np
-from math import fabs,sqrt
-import glob, os
+import os
 
 # choose this for not using visuals and thus making experiments faster
 headless = True

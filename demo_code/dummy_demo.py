@@ -6,7 +6,7 @@
 
 # imports framework
 import sys, os
-sys.path.insert(0, 'evoman') 
+sys.path.insert(0, '../evoman')
 from environment import Environment
 
 experiment_name = 'dummy_demo'

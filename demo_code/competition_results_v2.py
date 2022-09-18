@@ -5,14 +5,13 @@ from math import pi
 from matplotlib.ticker import AutoLocator
 from matplotlib.offsetbox import AnchoredText
 
-sys.path.insert(0, 'evoman')
+sys.path.insert(0, '../evoman')
 from environment import Environment
-from demo_controller import player_controller
+from demo_code.demo_controller import player_controller
 import numpy as np
 import pandas as pd
-import pickle as pkl
 import os
-import pygame
+
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 ###### CREATE A FOLDER CALLED solutions IN THE SAME DIRECTORY AS THIS SCRIPT  AND PASTE ALL SOLUTION TXTs THERE ! #####
