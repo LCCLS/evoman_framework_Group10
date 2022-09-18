@@ -120,14 +120,13 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
         total_performance['e'] += e
         total_performance['t'] += t
 
-    total_performance['f'] = total_performance['f'] / 10
-    total_performance['p'] = total_performance['p'] / 10
-    total_performance['e'] = total_performance['e'] / 10
-    total_performance['t'] = total_performance['t'] / 10
+    total_performance = {key: value / 10 for key, value in total_performance.items()}
 
-    performance_result = [[total_performance['f'], total_performance['p'], total_performance['e'], total_performance['t']]]
-    #performance_df_2 = pd.DataFrame(total_performance)
-    performance_df = pd.DataFrame(performance_result, columns=['fitness', 'player_health', 'enemy_health', 'time'])
+    performance_df = pd.DataFrame([[total_performance['f'],
+                                    total_performance['p'],
+                                    total_performance['e'],
+                                    total_performance['t']]],
+                                  columns=['fitness', 'player_health', 'enemy_health', 'time'])
     print(f"""
 -------------------------------------------------------------------------------------------------------------------
     f"Best Genome fitness: {total_performance['f']}\n" \
@@ -186,6 +185,9 @@ if __name__ == '__main__':
             gen = 0
 
             run(config_path)
+
+            # INSTEAD OF PLOTTING EACH EXPERIMENT, WE SHOULD AVERAGE THEIR RESULTS AND THEN PLOT THE MEAN OF THE 10 EXP
+
             generation_plotting(f"{experiment_name}/EXP_{i + 1}", enemy)  # creates plot for the generational fitness
 
         for i in range(N_runs):
