@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def generation_plotting(dir_filepath):
+def generation_plotting(dir_filepath, enemy):
     """
     plotting the fitness per generation for the best and the mean values per generation
     """
@@ -12,8 +12,11 @@ def generation_plotting(dir_filepath):
     ax = plt.gca()
     generations.plot(kind='line', x='gen', y='mean', ax=ax)
     generations.plot(kind='line', x='gen', y='best', color='red', ax=ax)
+
+    plt.title(f"Generational Fitness for Enemy {enemy}")
     plt.xlabel("Generations")
     plt.ylabel("Fitness")
+
     plt.savefig(dir_filepath + '/generation_fitness.png')
     #  plt.show()
 
