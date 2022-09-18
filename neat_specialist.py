@@ -1,3 +1,4 @@
+import pickle
 import sys
 
 sys.path.insert(0, 'evoman')
@@ -18,16 +19,23 @@ def simulation(env, x):
     return f
 
 
-def custom_fitness(env, x, gamma=0.9, alpha=0.1):
+def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
     """
     this is a custom function with default keyword parameters, change these for experiment
     """
     f, p, e, t = env.play(pcont=x)
-    fitness = gamma * (100-e) + alpha * p - np.log(t)
-    return fitness
+    fitness = gamma * (100 - e) + alpha * p - np.log(t)
+
+    if mode == 'custom_fitness':
+        return fitness
+    elif mode == 'final_run':
+        return fitness, p, e, t
 
 
 def eval_genomes(genomes, config):
+    """
+    runs the evolution for n generations and saves the mean, std, and max fitness of each generation to the exp file
+    """
     generation = []
     global gen
     for genome_id, genome in genomes:
@@ -40,6 +48,7 @@ def eval_genomes(genomes, config):
     fitness_std.append(np.std(generation))
 
     # saving experiment information
+
     file_aux = open(f"{experiment_name}/EXP_{i + 1}" + "/results.txt", "a")
     file_aux.write("\ngen best mean std")
     file_aux.write(
@@ -55,7 +64,7 @@ def eval_genomes(genomes, config):
 
 
 def run(configuration_filepath):
-    # Load the confih file (neat_config)
+    # Load the config file (neat_config)
 
     config = neat.Config(
         neat.DefaultGenome,
@@ -73,17 +82,35 @@ def run(configuration_filepath):
     pop.add_reporter(neat.Checkpointer(5))  # don't know what is that
 
     # Run NEAT for 30 generations
-    winner = pop.run(eval_genomes, 3)
+    winner = pop.run(eval_genomes, 50)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
-    file_aux = open(f"{experiment_name}/EXP_{i + 1}" + "/results.txt", "a")
-    file_aux.write("\nbest genome: ")
-    file_aux.write(f'{winner}')
-    file_aux.close()
+    # save the winning genome
+    with open(f"{experiment_name}/EXP_{i + 1}" + "/best_genome.txt", 'wb') as f:
+        pickle.dump(winner, f)
 
 
-# ________________________________________________________________________
+def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
+
+    with open(dir_path + "/best_genome.txt", "rb") as f:
+        genome = pickle.load(f)
+
+    genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
+    performance_result = f"Best Genome fitness: {genome_fitness}\n" \
+                         f"Best Genome Player Health:{p}\n" \
+                         f"Best Genome Enemy Health:{e}\n" \
+                         f"Best Genome time played:{t}\n"
+    print(f"""
+-------------------------------------------------------------------------------------------------------------------
+    {performance_result}
+-------------------------------------------------------------------------------------------------------------------
+
+    """)
+
+    file_performance = open(f"{experiment_name}/EXP_{i + 1}_performance" + "/best_genome_performance", "a")
+    file_performance.write(f"Best genome performance:\n{performance_result}")
+    file_performance.close()
 
 
 if __name__ == '__main__':
@@ -95,7 +122,10 @@ if __name__ == '__main__':
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    experiment_name = "Neat_implemetation_1"
+    # other parameters that need to be set:
+    experiment_name = "Neat_implementation_1"
+    N_runs = 1
+
     # create directory if it does not exist yet
     if not os.path.exists(experiment_name):
         os.makedirs(experiment_name)
@@ -116,12 +146,9 @@ if __name__ == '__main__':
     # default environment fitness is assumed for experiment
     env.state_to_log()  # checks environment state
 
-    N_runs = 1
-
     for i in range(N_runs):
         if not os.path.exists(f"{experiment_name}/EXP_{i + 1}"):
             os.makedirs(f"{experiment_name}/EXP_{i + 1}")
-        # global variables for saving mean and max each generation
 
         n_hidden_neurons = 10
         fitness_gens = []
@@ -130,3 +157,11 @@ if __name__ == '__main__':
         gen = 0
 
         run('neat_config.txt')
+
+    for i in range(N_runs):
+
+        if not os.path.exists(f"{experiment_name}/EXP_{i + 1}_performance"):
+            os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
+
+        run_best_genome(env, dir_path=f"{experiment_name}" + f"/EXP_{i + 1}")
+    print('ALl games played. All files saved. ')
