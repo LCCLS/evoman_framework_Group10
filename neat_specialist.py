@@ -1,4 +1,5 @@
 import pickle
+import statistics
 import sys
 
 sys.path.insert(0, 'evoman')
@@ -82,7 +83,7 @@ def run(configuration_filepath):
     pop.add_reporter(neat.Checkpointer(5))  # don't know what is that
 
     # Run NEAT for 30 generations
-    winner = pop.run(eval_genomes, 50)
+    winner = pop.run(eval_genomes, 1)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -92,15 +93,22 @@ def run(configuration_filepath):
 
 
 def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
-
     with open(dir_path + "/best_genome.txt", "rb") as f:
         genome = pickle.load(f)
 
-    genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
-    performance_result = f"Best Genome fitness: {genome_fitness}\n" \
-                         f"Best Genome Player Health:{p}\n" \
-                         f"Best Genome Enemy Health:{e}\n" \
-                         f"Best Genome time played:{t}\n"
+    total_performance = {'f': 0, 'p': 0, 'e': 0, 't': 0}
+    for i in range(10):
+
+        genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
+        total_performance['f'] = statistics.mean([total_performance['f'], genome_fitness])
+        total_performance['p'] = statistics.mean([total_performance['p'], p])
+        total_performance['e'] = statistics.mean([total_performance['e'], e])
+        total_performance['t'] = statistics.mean([total_performance['t'], t])
+
+    performance_result = f"Best Genome fitness: {total_performance['f']}\n" \
+                         f"Best Genome Player Health:{total_performance['p']}\n" \
+                         f"Best Genome Enemy Health:{total_performance['e']}\n" \
+                         f"Best Genome time played:{total_performance['t']}\n"
     print(f"""
 -------------------------------------------------------------------------------------------------------------------
     {performance_result}
@@ -108,7 +116,7 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
 
     """)
 
-    file_performance = open(f"{experiment_name}/EXP_{i + 1}_performance" + "/best_genome_performance", "a")
+    file_performance = open(f"{dir_path}_performance" + "/best_genome_performance", "a")
     file_performance.write(f"Best genome performance:\n{performance_result}")
     file_performance.close()
 
@@ -164,4 +172,5 @@ if __name__ == '__main__':
             os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
 
         run_best_genome(env, dir_path=f"{experiment_name}" + f"/EXP_{i + 1}")
+
     print('ALl games played. All files saved. ')
