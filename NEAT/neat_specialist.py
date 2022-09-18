@@ -11,6 +11,7 @@ import pandas as pd
 sys.path.insert(0, 'evoman')
 from environment import Environment
 from neat_controller import NeatController
+from neat_plotting import *
 
 
 def simulation(env, x):
@@ -64,7 +65,7 @@ def eval_genomes(genomes, config):
         )
     else:
         file_aux.write(
-            f"\n{gen}: "
+            f"\n{gen},"
             + str((fitness_max[-1]))
             + ","
             + str((fitness_gens[-1]))
@@ -76,7 +77,7 @@ def eval_genomes(genomes, config):
     gen += 1
 
 
-def run(configuration_filepath):
+def run(configuration_filepath, ):
     # Load the config file (neat_config)
 
     config = neat.Config(
@@ -92,7 +93,7 @@ def run(configuration_filepath):
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(5))  # this loads checkpoints for every 5 generations
     # runnning for n generations
-    winner = pop.run(eval_genomes, 1)
+    winner = pop.run(eval_genomes, 50)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -185,6 +186,7 @@ if __name__ == '__main__':
             gen = 0
 
             run(config_path)
+            generation_plotting(f"{experiment_name}/EXP_{i + 1}", enemy)  # creates plot for the generational fitness
 
         for i in range(N_runs):
 
