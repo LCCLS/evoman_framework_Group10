@@ -6,7 +6,7 @@ import statistics
 import sys
 import time
 
-sys.path.insert(0, 'evoman')
+sys.path.insert(0, '../evoman')
 from environment import Environment
 from neat_controller import NeatController
 
@@ -51,7 +51,7 @@ def eval_genomes(genomes, config):
 
     file_aux = open(f"{experiment_name}/EXP_{i + 1}" + "/results.txt", "a")
     if gen == 0:
-        file_aux.write("\ngen,best,mean,std")
+        file_aux.write("gen,best,mean,std")
         file_aux.write(
             f"\n{gen},"
             + str((fitness_max[-1]))
