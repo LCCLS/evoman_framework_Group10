@@ -24,11 +24,11 @@ n_hidden_neurons = 0
 
 # initializes environment for multi objetive mode (generalist)  with static enemy and ai player
 env = Environment(experiment_name=experiment_name,
-				  playermode="ai",
-				  player_controller=player_controller(n_hidden_neurons),
-		  		  speed="normal",
-				  enemymode="static",
-				  level=2)
+                  playermode="ai",
+                  player_controller=player_controller(n_hidden_neurons),
+                  speed="normal",
+                  enemymode="static",
+                  level=2)
 
 sol = np.loadtxt('solutions_demo/demo_all.txt')
 print('\n LOADING SAVED GENERALIST SOLUTION FOR ALL ENEMIES \n')

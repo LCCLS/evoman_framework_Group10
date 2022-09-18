@@ -6,7 +6,8 @@
 
 # imports framework
 import sys, os
-sys.path.insert(0, 'evoman') 
+
+sys.path.insert(0, 'evoman')
 from environment import Environment
 
 experiment_name = 'test'
@@ -25,4 +26,3 @@ for en in range(1, 9):
                       playermode='human')
     env.update_parameter('enemies', [en])
     env.play()
-

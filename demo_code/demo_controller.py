@@ -22,14 +22,14 @@ class player_controller(Controller):
 		# Normalises the input using min-max scaling
 		inputs = (inputs-min(inputs))/float((max(inputs)-min(inputs)))
 
-		if self.n_hidden[0]>0:
+		if self.n_hidden[0] > 0:
 			# Preparing the weights and biases from the controller of layer 1
 
 			# Biases for the n hidden neurons
-			bias1 = controller[:self.n_hidden[0]].reshape(1,self.n_hidden[0])
+			bias1 = controller[:self.n_hidden[0]].reshape(1, self.n_hidden[0])
 			# Weights for the connections from the inputs to the hidden nodes
 			weights1_slice = len(inputs)*self.n_hidden[0] + self.n_hidden[0]
-			weights1 = controller[self.n_hidden[0]:weights1_slice].reshape((len(inputs),self.n_hidden[0]))
+			weights1 = controller[self.n_hidden[0]:weights1_slice].reshape((len(inputs), self.n_hidden[0]))
 
 			# Outputs activation first layer.
 			output1 = sigmoid_activation(inputs.dot(weights1) + bias1)
@@ -81,7 +81,7 @@ class enemy_controller(Controller):
 		# Number of hidden neurons
 		self.n_hidden = [_n_hidden]
 
-	def control(self, inputs,controller):
+	def control(self, inputs, controller):
 		# Normalises the input using min-max scaling
 		inputs = (inputs-min(inputs))/float((max(inputs)-min(inputs)))
 

@@ -43,13 +43,13 @@ n_hidden_neurons = 10
 
 # initializes simulation for coevolution evolution mode.
 env = environm(experiment_name=experiment_name,
-			   enemies=[2],
-			   playermode="ai",
-			   enemymode="ai",
-			   player_controller=player_controller(n_hidden_neurons),
-			   enemy_controller=enemy_controller(n_hidden_neurons),
-			   level=2,
-			   speed="fastest")
+               enemies=[2],
+               playermode="ai",
+               enemymode="ai",
+               player_controller=player_controller(n_hidden_neurons),
+               enemy_controller=enemy_controller(n_hidden_neurons),
+               level=2,
+               speed="fastest")
 
 
 env.state_to_log() # checks environment state

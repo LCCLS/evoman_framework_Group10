@@ -1,20 +1,16 @@
+import numpy as np
+import os
+import neat
 import pickle
 import statistics
 import sys
+import time
 
 sys.path.insert(0, 'evoman')
 from environment import Environment
 from neat_controller import NeatController
 
-# imports other libs
-import time
-import numpy as np
-import os
 
-import neat
-
-
-# runs simulation
 def simulation(env, x):
     f, p, e, t = env.play(pcont=x)
     return f
@@ -29,8 +25,11 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
 
     if mode == 'custom_fitness':
         return fitness
+
     elif mode == 'final_run':
         return fitness, p, e, t
+    else:
+        raise KeyError("This mode of custom function does not exist.")
 
 
 def eval_genomes(genomes, config):
@@ -51,15 +50,26 @@ def eval_genomes(genomes, config):
     # saving experiment information
 
     file_aux = open(f"{experiment_name}/EXP_{i + 1}" + "/results.txt", "a")
-    file_aux.write("\ngen best mean std")
-    file_aux.write(
-        f"\ngen-{gen}: "
-        + str((fitness_max[-1]))
-        + " "
-        + str((fitness_gens[-1]))
-        + " "
-        + str((fitness_std[-1]))
-    )
+    if gen == 0:
+        file_aux.write("\ngen,best,mean,std")
+        file_aux.write(
+            f"\n{gen},"
+            + str((fitness_max[-1]))
+            + ","
+            + str((fitness_gens[-1]))
+            + ","
+            + str((fitness_std[-1]))
+        )
+    else:
+        file_aux.write(
+            f"\n{gen}: "
+            + str((fitness_max[-1]))
+            + ","
+            + str((fitness_gens[-1]))
+            + ","
+            + str((fitness_std[-1]))
+        )
+
     file_aux.close()
     gen += 1
 
@@ -75,15 +85,12 @@ def run(configuration_filepath):
         configuration_filepath)
 
     pop = neat.Population(config)
-
-    # Ass stdout reporter to show porgress
     pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     pop.add_reporter(stats)
-    pop.add_reporter(neat.Checkpointer(5))  # don't know what is that
-
-    # Run NEAT for 30 generations
-    winner = pop.run(eval_genomes, 1)
+    pop.add_reporter(neat.Checkpointer(5))  # this loads checkpoints for every 5 generations
+    # runnning for n generations
+    winner = pop.run(eval_genomes, 40)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -93,17 +100,27 @@ def run(configuration_filepath):
 
 
 def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
+    """
+    loads the best genome for each exxperiment and performs 10 games on it and averages the results
+    returns: saves the averaged resutls in the performance file related to the experiment
+    """
     with open(dir_path + "/best_genome.txt", "rb") as f:
         genome = pickle.load(f)
 
     total_performance = {'f': 0, 'p': 0, 'e': 0, 't': 0}
-    for i in range(10):
 
+    for i in range(10):
         genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
-        total_performance['f'] = statistics.mean([total_performance['f'], genome_fitness])
-        total_performance['p'] = statistics.mean([total_performance['p'], p])
-        total_performance['e'] = statistics.mean([total_performance['e'], e])
-        total_performance['t'] = statistics.mean([total_performance['t'], t])
+
+        total_performance['f'] += genome_fitness
+        total_performance['p'] += p
+        total_performance['e'] += e
+        total_performance['t'] += t
+
+    total_performance['f'] = total_performance['f'] / 10
+    total_performance['p'] = total_performance['p'] / 10
+    total_performance['e'] = total_performance['e'] / 10
+    total_performance['t'] = total_performance['t'] / 10
 
     performance_result = f"Best Genome fitness: {total_performance['f']}\n" \
                          f"Best Genome Player Health:{total_performance['p']}\n" \
@@ -130,47 +147,49 @@ if __name__ == '__main__':
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    # other parameters that need to be set:
-    experiment_name = "Neat_implementation_1"
-    N_runs = 1
+    # here we do the experiment for three individual enemies --> 3 specialist agents
+    all_enemies = [2, 7, 8]
+    for enemy in all_enemies:
 
-    # create directory if it does not exist yet
-    if not os.path.exists(experiment_name):
-        os.makedirs(experiment_name)
+        ### parameters for the experiment###
+        experiment_name = f"NEAT_ENEMY_{enemy}"
+        N_runs = 10
 
-    # initializes simulation in individual evolution mode, for single static enemy.
-    env = Environment(
-        experiment_name=experiment_name,
-        enemies=[2],
-        playermode="ai",
-        player_controller=NeatController(),
-        enemymode="static",
-        level=2,
-        speed="fastest",
-        multiplemode="no",
-        randomini="yes",
-    )
+        if not os.path.exists(experiment_name):
+            os.makedirs(experiment_name)
 
-    # default environment fitness is assumed for experiment
-    env.state_to_log()  # checks environment state
+        env = Environment(  # if any changes are to be made in the environment, we have to report them in the paper
+            experiment_name=experiment_name,
+            enemies=[enemy],
+            playermode="ai",
+            player_controller=NeatController(),
+            enemymode="static",
+            level=2,  # this parameter should not be changed
+            contacthurt='player',  # this parameter should not be changed
+            speed="fastest",
+            multiplemode="no",  # sequentially changing enemies in the order given above
+            randomini="yes",
+        )
 
-    for i in range(N_runs):
-        if not os.path.exists(f"{experiment_name}/EXP_{i + 1}"):
-            os.makedirs(f"{experiment_name}/EXP_{i + 1}")
+        env.state_to_log()
 
-        n_hidden_neurons = 10
-        fitness_gens = []
-        fitness_max = []
-        fitness_std = []
-        gen = 0
+        for i in range(N_runs):
+            if not os.path.exists(f"{experiment_name}/EXP_{i + 1}"):
+                os.makedirs(f"{experiment_name}/EXP_{i + 1}")
 
-        run('neat_config.txt')
+            n_hidden_neurons = 10
+            fitness_gens = []
+            fitness_max = []
+            fitness_std = []
+            gen = 0
 
-    for i in range(N_runs):
+            run('neat_config.txt')
 
-        if not os.path.exists(f"{experiment_name}/EXP_{i + 1}_performance"):
-            os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
+        for i in range(N_runs):
 
-        run_best_genome(env, dir_path=f"{experiment_name}" + f"/EXP_{i + 1}")
+            if not os.path.exists(f"{experiment_name}/EXP_{i + 1}_performance"):
+                os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
 
-    print('ALl games played. All files saved. ')
+            run_best_genome(env, dir_path=f"{experiment_name}" + f"/EXP_{i + 1}")
+
+        print('ALl games played. All files saved. ')
