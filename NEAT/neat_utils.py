@@ -24,17 +24,24 @@ def average_experiment_gens(root_dir):
     #  FINAL EXPERIMENT CONCATENATION OF DFS
     # total_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
 
+    #  NOT SURE IF THIS FULLY WORKS
+    # total_avg = (exp1[['best', 'mean']] + exp2[['best', 'mean']] + exp3[['best', 'mean']]) / 3 # different approach
+    # that also works in case for double-checking result
     total_mean_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).mean()
     total_std_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).std()
 
-    if not os.path.exists(f"{root_dir}/EXP_MEAN"):
-        os.makedirs(f"{root_dir}/EXP_MEAN")
+    total_mean_exp = total_mean_exp.rename(columns={"gen": "Generation", "best": "Avg_Maximum_Fitness",
+                                                    "mean": "Avg_Mean_Fitness"})
+    total_mean_exp = total_mean_exp.drop(['std'], axis=1)
 
-    elif not os.path.exists(f"{root_dir}/EXP_STD"):
-        os.makedirs(f"{root_dir}/EXP_STD")
+    total_std_exp = total_std_exp.rename(columns={"best": "Avg_Maximum_Std", "mean": "Avg_Mean_Std"})
+    total_std_exp = total_std_exp.drop(['gen', 'std'], axis=1)
+    final_df = pd.concat([total_mean_exp, total_std_exp], axis=1)
 
-    total_mean_exp.to_csv(f"{root_dir}/EXP_MEAN/results.txt")
-    total_std_exp.to_csv(f"{root_dir}/EXP_STD/results.txt")
+    if not os.path.exists(f"{root_dir}/EXP_AVERAGE"):
+        os.makedirs(f"{root_dir}/EXP_AVERAGE")
+
+    final_df.to_csv(f"{root_dir}/EXP_AVERAGE/results.txt")
 
 
 def generation_plotting(dir_filepath, enemy):
@@ -42,7 +49,9 @@ def generation_plotting(dir_filepath, enemy):
     plotting the fitness per generation for the best and the mean values per generation
 
     --> using matplotlib so not so pretty
+    NOT BEING USED AT THE MOMENT
     """
+
     file = dir_filepath + '/results.txt'
     generations = pd.read_csv(file)
 
@@ -55,6 +64,8 @@ def generation_plotting(dir_filepath, enemy):
     plt.ylabel("Fitness")
 
     plt.savefig(dir_filepath + '/generation_fitness.png')
+    raise AssertionError('wrong plotting function. use: pretty_generation_plotting')
+
     #  plt.show()
 
 
@@ -67,7 +78,9 @@ def pretty_generation_plotting(dir_filepath, enemy):
     file = dir_filepath + '/results.txt'
     generations = pd.read_csv(file)
 
-    fig = px.line(generations, x="gen", y=generations.columns[1:3])
+    df_melt = generations.melt(id_vars='Generation', value_vars=['Avg_Maximum_Fitness', 'Avg_Mean_Fitness',
+                                                                 "Avg_Maximum_Std", "Avg_Mean_Std"])
+    fig = px.line(df_melt, x='Generation', y='value', color='variable')
     fig.update_layout(
         title={'text': f"Generational Fitness for Enemy {enemy}"},
         xaxis_title="Generation",
@@ -77,7 +90,11 @@ def pretty_generation_plotting(dir_filepath, enemy):
     # fig.show()
 
 
-enemies = [2, 7, 8]
-for i in enemies:
-    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
-    pretty_generation_plotting(filepath, i)
+# enemies = [2, 7, 8]
+# for i in enemies:
+#    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
+#    pretty_generation_plotting(filepath, i)
+
+#dir_files = 'NEAT_ENEMY_2'
+#average_experiment_gens(dir_files)
+#pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
