@@ -9,9 +9,11 @@ import time
 import pandas as pd
 
 sys.path.insert(0, 'evoman')
+from csv import writer
 from environment import Environment
 from neat_controller import NeatController
 from neat_plotting import *
+from neat_utils import *
 
 
 def simulation(env, x):
@@ -93,7 +95,7 @@ def run(configuration_filepath, ):
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(5))  # this loads checkpoints for every 5 generations
     # runnning for n generations
-    winner = pop.run(eval_genomes, 50)
+    winner = pop.run(eval_genomes, 1)
 
     # Show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -110,33 +112,26 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
     with open(dir_path + "/best_genome.txt", "rb") as f:
         genome = pickle.load(f)
 
-    total_performance = {'f': 0, 'p': 0, 'e': 0, 't': 0}
+    header = ['fitness', 'player_health', 'enemy_health', 'time']
+    for trial in range(5):
 
-    for i in range(10):
         genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
+        total_performance = list(custom_fitness(env, genome, mode='final_run'))
 
-        total_performance['f'] += genome_fitness
-        total_performance['p'] += p
-        total_performance['e'] += e
-        total_performance['t'] += t
+        with open(f"{dir_path}_performance" + "/best_genome_performance.csv", 'a') as f_object:
+            writer_object = writer(f_object)
 
-    total_performance = {key: value / 10 for key, value in total_performance.items()}
+            if trial == 0:
+                writer_object.writerow(header)
 
-    performance_df = pd.DataFrame([[total_performance['f'],
-                                    total_performance['p'],
-                                    total_performance['e'],
-                                    total_performance['t']]],
-                                  columns=['fitness', 'player_health', 'enemy_health', 'time'])
-    print(f"""
--------------------------------------------------------------------------------------------------------------------
-    f"Best Genome fitness: {total_performance['f']}\n" \
-                             f"Best Genome Player Health:{total_performance['p']}\n" \
-                             f"Best Genome Enemy Health:{total_performance['e']}\n" \
-                             f"Best Genome time played:{total_performance['t']}\n"
--------------------------------------------------------------------------------------------------------------------
+            writer_object.writerow(total_performance)
+            f_object.close()
 
+    print("""
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Best Genome run completed. Saved files to EXP_performance. %% 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     """)
-    performance_df.to_csv(f"{dir_path}_performance" + "/best_genome_performance.csv")
 
 
 if __name__ == '__main__':
@@ -154,7 +149,8 @@ if __name__ == '__main__':
 
         ### parameters for the experiment###
         experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
-        N_runs = 1
+        N_runs = 3
+        N_trials = 5
 
         if not os.path.exists(experiment_name):
             os.makedirs(experiment_name)
@@ -185,16 +181,21 @@ if __name__ == '__main__':
             gen = 0
 
             run(config_path)
-
-            # INSTEAD OF PLOTTING EACH EXPERIMENT, WE SHOULD AVERAGE THEIR RESULTS AND THEN PLOT THE MEAN OF THE 10 EXP
-
-            generation_plotting(f"{experiment_name}/EXP_{i + 1}", enemy)  # creates plot for the generational fitness
+            #generation_plotting(f"{experiment_name}/EXP_{i + 1}", enemy)  # creates plot for the generational fitness
 
         for i in range(N_runs):
 
             if not os.path.exists(f"{experiment_name}/EXP_{i + 1}_performance"):
                 os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
 
-            run_best_genome(env, dir_path=f"{experiment_name}" + f"/EXP_{i + 1}")
+            #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
+            run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i + 1}")
 
-        print('ALl games played. All files saved. ')
+        #  AVERAGING ALL EXPERIMENT RESULTS
+        average_experiment_gens(f"{experiment_name}")
+        generation_plotting(f"{experiment_name}/EXP_MEAN", enemy)
+        print(f"""
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% ENEMY {enemy}: ALL TRIALS PLAYED. ALL FILES SAVED. %% 
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        """)
