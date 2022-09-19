@@ -12,7 +12,6 @@ sys.path.insert(0, 'evoman')
 from csv import writer
 from environment import Environment
 from neat_controller import NeatController
-from neat_plotting import *
 from neat_utils import *
 
 
@@ -147,7 +146,7 @@ if __name__ == '__main__':
     all_enemies = [2, 7, 8]
     for enemy in all_enemies:
 
-        ### parameters for the experiment###
+        #  PARAMETERS  #
         experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
         N_runs = 3
         N_trials = 5
@@ -181,7 +180,6 @@ if __name__ == '__main__':
             gen = 0
 
             run(config_path)
-            #generation_plotting(f"{experiment_name}/EXP_{i + 1}", enemy)  # creates plot for the generational fitness
 
         for i in range(N_runs):
 
@@ -193,7 +191,10 @@ if __name__ == '__main__':
 
         #  AVERAGING ALL EXPERIMENT RESULTS
         average_experiment_gens(f"{experiment_name}")
-        generation_plotting(f"{experiment_name}/EXP_MEAN", enemy)
+
+        #  PLOTTING THE AVERAGED GENERATION FITNESS SCORES OF 10 REPETITIONS PER ENEMY
+        pretty_generation_plotting(f"{experiment_name}/EXP_MEAN", enemy)
+
         print(f"""
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% ENEMY {enemy}: ALL TRIALS PLAYED. ALL FILES SAVED. %% 
