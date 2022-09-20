@@ -2,13 +2,12 @@ import numpy as np
 import os
 import neat
 import pickle
-import statistics
 import sys
 import time
-
 import pandas as pd
 
 sys.path.insert(0, 'evoman')
+
 from csv import writer
 from environment import Environment
 from neat_controller import NeatController
@@ -25,13 +24,13 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
     this is a custom function with default keyword parameters, change these for experiment
     """
     f, p, e, t = env.play(pcont=x)
-    # fitness = gamma * (100 - e) + alpha * p - np.log(t)
+    if mode == 'default':
+        return f
 
-    if mode == 'exp_fitness':
-        #  exponential fitness
+    elif mode == 'exp_fitness':
 
         if p == 0.0:
-            p += (100-e)
+            p += (100 - e)
 
         fit = gamma * (100 - e) + alpha * p
         exp_fit = pow(fit, 2)
@@ -42,8 +41,8 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
         return final_fit
 
     elif mode == 'final_run':
-        # default fitness
         fitness = gamma * (100 - e) + alpha * p - np.log(t)
+
         return fitness, p, e, t
     else:
         raise KeyError("This mode of custom function does not exist.")
@@ -51,19 +50,19 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
 
 def eval_genomes(genomes, config):
     """
-    runs the evolution for n generations and saves the mean, std, and max fitness of each generation to the exp file
+    runs the evolution for n generations and saves the mean, std, and max fitness of each generation to the EXP_ file.
+    - the config file needs to be passed into the function as a parameter.
     """
     fitness_dict = {'best': 0, 'mean': 0, }
     generation = []
     global gen
+
     for genome_id, genome in genomes:
         genome.fitness = 0
 
-        #  EXPERIMENT EXPONENTIAL FITNESS  #
-        #  genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exp_fitness')
-
-        # DEFAULT EXPERIMENT LINEAR FITNESS  #
-        genome.fitness2 = simulation(env, genome)
+        # DEFAULT EXPERIMENT LINEAR FITNESS  --> use mode:'default'
+        # EXPONENTIAL EXPERIMENT FITNESS  --> use mode:'exp_fitness'
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default')
         generation.append(genome.fitness)
 
     fitness_gens.append(np.mean(generation))
@@ -72,56 +71,51 @@ def eval_genomes(genomes, config):
     fitness_dict['best'] = np.max(generation)
     fitness_dict['mean'] = np.mean(generation)
 
+    #  saving experiment information
+    with open(f"{experiment_name}/EXP_{i}" + "/results.txt", "a") as f:
 
-    # saving experiment information
+        if gen == 0:
+            f.write("gen,best,mean,std")
 
-    file_aux = open(f"{experiment_name}/EXP_{i + 1}" + "/results.txt", "a")
-    if gen == 0:
-        file_aux.write("gen,best,mean,std")
-        file_aux.write(
-            f"\n{gen},"
-            + str((fitness_max[-1]))
-            + ","
-            + str((fitness_gens[-1]))
-            + ","
-            + str((fitness_std[-1]))
-        )
-    else:
-        file_aux.write(
-            f"\n{gen},"
-            + str((fitness_max[-1]))
-            + ","
-            + str((fitness_gens[-1]))
-            + ","
-            + str((fitness_std[-1]))
-        )
+        f.write(f"\n{gen},"
+                + str((fitness_max[-1]))
+                + ","
+                + str((fitness_gens[-1]))
+                + ","
+                + str((fitness_std[-1]))
+                )
 
-    file_aux.close()
-    gen += 1
+        gen += 1
 
 
-def run(configuration_filepath, ):
-    # Load the config file (neat_config)
+def run():
+    """
+    loads the neat cofiguration file and its parameters for inititation of a neat model. calls the eval_genome()
+    function to evaluate the population with n number of generations
+    """
+
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, 'neat_config.txt')
 
     config = neat.Config(
         neat.DefaultGenome,
         neat.DefaultReproduction,
         neat.DefaultSpeciesSet,
         neat.DefaultStagnation,
-        configuration_filepath)
+        config_path)
 
     pop = neat.Population(config)
-    pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
+
+    pop.add_reporter(neat.StdOutReporter(True))
     pop.add_reporter(stats)
-    pop.add_reporter(neat.Checkpointer(5))  # this loads checkpoints for every 5 generations
-    # runnning for n generations
+    pop.add_reporter(neat.Checkpointer(5))
+
     winner = pop.run(eval_genomes, 45)
 
-    # Show final stats
-    print('\nBest genome:\n{!s}'.format(winner))
-    # save the winning genome
-    with open(f"{experiment_name}/EXP_{i + 1}" + "/best_genome.txt", 'wb') as f:
+    print(f"\nBest genome:\n{winner}")
+
+    with open(f"{experiment_name}/EXP_{i}" + "/best_genome.txt", 'wb') as f:
         pickle.dump(winner, f)
 
 
@@ -133,44 +127,42 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
     with open(dir_path + "/best_genome.txt", "rb") as f:
         genome = pickle.load(f)
 
-    header = ['fitness', 'player_health', 'enemy_health', 'time']
     for trial in range(5):
 
-        # genome_fitness, p, e, t = custom_fitness(env, genome, mode='final_run')
         total_performance = list(custom_fitness(env, genome, mode='final_run'))
 
         with open(f"{dir_path}_performance" + "/best_genome_performance.csv", 'a') as f_object:
             writer_object = writer(f_object)
 
             if trial == 0:
-                writer_object.writerow(header)
+                writer_object.writerow(['fitness', 'player_health', 'enemy_health', 'time'])
 
             writer_object.writerow(total_performance)
             f_object.close()
 
-    print("""
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Best Genome run completed. Saved files to EXP_performance. %% 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    """)
+        print(f"""
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% Best Genome run {trial}completed. Saved files to EXP_performance. %% 
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        """)
 
 
 if __name__ == '__main__':
-
-    local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'neat_config.txt')
 
     headless = True
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
     # here we do the experiment for three individual enemies --> 3 specialist agents
-    all_enemies = [2]
+    all_enemies = [2, 5, 8]  # experiments for enemies: 2, 7, 7 # otherwise we could try 2, 6, 8
     for enemy in all_enemies:
 
         #  PARAMETERS  #
         experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
-        N_runs = 1
+
+        #  Change RUNS for the number of repetitions
+        RUNS = 10
+        N_runs = RUNS + 1  # don't change this parameter
         N_trials = 5
 
         if not os.path.exists(experiment_name):
@@ -191,9 +183,9 @@ if __name__ == '__main__':
 
         env.state_to_log()
 
-        for i in range(N_runs):
-            if not os.path.exists(f"{experiment_name}/EXP_{i + 1}"):
-                os.makedirs(f"{experiment_name}/EXP_{i + 1}")
+        for i in range(1, N_runs):
+            if not os.path.exists(f"{experiment_name}/EXP_{i}"):
+                os.makedirs(f"{experiment_name}/EXP_{i}")
 
             n_hidden_neurons = 10
             fitness_gens = []
@@ -201,20 +193,17 @@ if __name__ == '__main__':
             fitness_std = []
             gen = 0
 
-            run(config_path)
+            run()
 
-        for i in range(N_runs):
+        for i in range(1, N_runs):
 
-            if not os.path.exists(f"{experiment_name}/EXP_{i + 1}_performance"):
-                os.makedirs(f"{experiment_name}/EXP_{i + 1}_performance")
+            if not os.path.exists(f"{experiment_name}/EXP_{i}_performance"):
+                os.makedirs(f"{experiment_name}/EXP_{i}_performance")
 
             #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
-            run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i + 1}")
+            run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i}")
 
-        #  AVERAGING ALL EXPERIMENT RESULTS
         average_experiment_gens(f"{experiment_name}")
-
-        #  PLOTTING THE AVERAGED GENERATION FITNESS SCORES OF 10 REPETITIONS PER ENEMY
         pretty_generation_plotting(f"{experiment_name}/EXP_AVERAGE", enemy)
 
         print(f"""
