@@ -11,24 +11,28 @@ def average_experiment_gens(root_dir):
     #  CHECK IN THE NEAT_SPECIALIST.PY FILE FOR N_RUNS AND UPDATE THE NUMBER OF FILES TO READ
 
     exp1 = pd.read_csv(f"{root_dir}/EXP_1/results.txt", index_col=False)
-    exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt", index_col=False)
-    exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt", index_col=False)
-    # exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt")
-    # exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt")
-    # exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt")
-    # exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt")
-    # exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt")
-    # exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt")
-    # exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt")
+    #exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt", index_col=False)
+    #exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt", index_col=False)
+    #exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt")
+    #exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt")
+    #exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt")
+    #exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt")
+    #exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt")
+    #exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt")
+    #exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt")
 
     #  FINAL EXPERIMENT CONCATENATION OF DFS
-    # total_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
+    #total_mean_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
+    #total_std_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).std()
+
+    total_mean_exp = pd.concat([exp1]).groupby(level=0).mean()
+    total_std_exp = pd.concat([exp1]).groupby(level=0).std()
 
     #  NOT SURE IF THIS FULLY WORKS
-    # total_avg = (exp1[['best', 'mean']] + exp2[['best', 'mean']] + exp3[['best', 'mean']]) / 3 # different approach
-    # that also works in case for double-checking result
-    total_mean_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).mean()
-    total_std_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).std()
+    #  total_avg = (exp1[['best', 'mean']] + exp2[['best', 'mean']] + exp3[['best', 'mean']]) / 3 # different approach
+    #  that also works in case for double-checking result
+    #  total_mean_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).mean()
+    #  total_std_exp = pd.concat([exp1, exp2, exp3]).groupby(level=0).std()
 
     total_mean_exp = total_mean_exp.rename(columns={"gen": "Generation", "best": "Avg_Maximum_Fitness",
                                                     "mean": "Avg_Mean_Fitness"})
