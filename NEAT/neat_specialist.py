@@ -15,6 +15,9 @@ from neat_utils import *
 
 
 def simulation(env, x):
+    """
+    not really needed anymore.
+    """
     f, p, e, t = env.play(pcont=x)
     return f
 
@@ -24,17 +27,18 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
     this is a custom function with default keyword parameters, change these for experiment
     """
     f, p, e, t = env.play(pcont=x)
+
     if mode == 'default':
         return f
 
     elif mode == 'exp_fitness':
 
-        if p == 0.0:
-            p += (100 - e)
+        # if p == 0.0:
+        #    p += (100 - e)
 
         fit = gamma * (100 - e) + alpha * p
-        exp_fit = pow(fit, 2)
-        max_fit = pow(100, 2)
+        exp_fit = pow(fit, 2)  # change this exp value here
+        max_fit = pow(100, 2)  # change this exp value here too
         norm_fit = (exp_fit - 0) / (max_fit - 0)
         final_fit = norm_fit - np.log(t)
 
@@ -62,7 +66,8 @@ def eval_genomes(genomes, config):
 
         # DEFAULT EXPERIMENT LINEAR FITNESS  --> use mode:'default'
         # EXPONENTIAL EXPERIMENT FITNESS  --> use mode:'exp_fitness'
-        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default')
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default') # change the mode
+        # parameter here
         generation.append(genome.fitness)
 
     fitness_gens.append(np.mean(generation))
@@ -153,15 +158,14 @@ if __name__ == '__main__':
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    # here we do the experiment for three individual enemies --> 3 specialist agents
-    all_enemies = [2, 5, 8]  # experiments for enemies: 2, 7, 7 # otherwise we could try 2, 6, 8
+    all_enemies = [2]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
     for enemy in all_enemies:
 
         #  PARAMETERS  #
         experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
 
         #  Change RUNS for the number of repetitions
-        RUNS = 10
+        RUNS = 1
         N_runs = RUNS + 1  # don't change this parameter
         N_trials = 5
 
