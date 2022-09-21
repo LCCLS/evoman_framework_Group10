@@ -25,29 +25,34 @@ def simulation(env, x):
 def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
     """
     this is a custom function with default keyword parameters, change these for experiment
+
+    BE CAREFUL WITH THE ffunction parameter, this is passed into the environment class and was recently instantiated
+    --> may run into troubles but if done correctly, the logs should print the correct fitness values
     """
-    f, p, e, t = env.play(pcont=x)
 
     if mode == 'default':
+        f, p, e, t = env.play(pcont=x, ffunction='linear')
         return f
 
     elif mode == 'exp_fitness':
 
-        # if p == 0.0:
-        #    p += (100 - e)
+        f, p, e, t = env.play(pcont=x, ffunction='exponential')
 
         fit = gamma * (100 - e) + alpha * p
-        exp_fit = pow(fit, 2)  # change this exp value here
-        max_fit = pow(100, 2)  # change this exp value here too
-        norm_fit = (exp_fit - 0) / (max_fit - 0)
-        final_fit = norm_fit - np.log(t)
+        exp_f = 8.7483 * (1.0247 ** fit)
 
+        max_f = 8.7483 * (1.0247 ** 100)
+        min_f = 8.7483 * (1.0247 ** 0)
+        norm_fit = (exp_f - min_f) / (max_f - min_f) * 100
+
+        final_fit = norm_fit - np.log(t)
         return final_fit
 
     elif mode == 'final_run':
-        fitness = gamma * (100 - e) + alpha * p - np.log(t)
+        f, p, e, t = env.play(pcont=x, ffunction='linear')
 
-        return fitness, p, e, t
+        return f, p, e, t
+
     else:
         raise KeyError("This mode of custom function does not exist.")
 
@@ -66,7 +71,7 @@ def eval_genomes(genomes, config):
 
         # DEFAULT EXPERIMENT LINEAR FITNESS  --> use mode:'default'
         # EXPONENTIAL EXPERIMENT FITNESS  --> use mode:'exp_fitness'
-        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default') # change the mode
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exp_fitness')  # change the mode
         # parameter here
         generation.append(genome.fitness)
 
@@ -116,7 +121,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(5))
 
-    winner = pop.run(eval_genomes, 45)
+    winner = pop.run(eval_genomes, 30)
 
     print(f"\nBest genome:\n{winner}")
 
