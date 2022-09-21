@@ -87,6 +87,29 @@ def pretty_generation_plotting(dir_filepath, enemy):
     fig.write_image(dir_filepath + '/generation_fitness.png')
     # fig.show()
 
+def best_solution_boxplots(best_genomes1,best_genomes2, enemy):
+    """
+    making three boxplots for each enemy, each comparing the individual gain for the two algorithms
+    for the best solution of each tested 5 times
+
+    """
+    genomes1 = pd.read_csv(best_genomes1)
+    genomes2 = pd.read_csv(best_genomes2)
+    genomes1["Individual Gain"] = genomes1["player_health"] - genomes1["enemy_health"]
+    genomes2["Individual Gain"] = genomes2["player_health"] - genomes2["enemy_health"]
+    genomes1["Algorithm"] = "Algorithm 1"
+    genomes2["Algorithm"] = "Algorithm 2"
+       
+    to_keep = ["Algorithm", "Individual Gain"]
+    for col in genomes1.columns:
+        if col not in to_keep:
+            genomes1.drop(col, axis=1, inplace=True)
+            genomes2.drop(col, axis=1, inplace=True)
+    genomes = pd.concat([genomes1, genomes2], axis=0)
+   
+    fig = px.box(genomes, x="Algorithm", y=genomes["Individual Gain"], title = f"Comparison of Best Individual Gain for Enemy {enemy}")
+    fig.show()
+
 
 # enemies = [2, 7, 8]
 # for i in enemies:
