@@ -11,22 +11,22 @@ def average_experiment_gens(root_dir):
     #  CHECK IN THE NEAT_SPECIALIST.PY FILE FOR N_RUNS AND UPDATE THE NUMBER OF FILES TO READ
 
     exp1 = pd.read_csv(f"{root_dir}/EXP_1/results.txt", index_col=False)
-    exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt", index_col=False)
-    exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt", index_col=False)
-    exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt")
-    exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt")
-    exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt")
-    exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt")
-    exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt")
-    exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt")
-    exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt")
+    #exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt", index_col=False)
+    #exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt", index_col=False)
+    #exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt", index_col=False)
+    e#xp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt", index_col=False)
+    #exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt", index_col=False)
+    #exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt", index_col=False)
+    #exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt", index_col=False)
+    #exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt", index_col=False)
+    #exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt", index_col=False)
 
     #  FINAL EXPERIMENT CONCATENATION OF DFS
-    total_mean_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
-    total_std_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).std()
+    #total_mean_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
+    #total_std_exp = pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).std()
 
-    #  total_mean_exp = pd.concat([exp1]).groupby(level=0).mean()
-    #  total_std_exp = pd.concat([exp1]).groupby(level=0).std()
+    total_mean_exp = pd.concat([exp1]).groupby(level=0).mean()
+    total_std_exp = pd.concat([exp1]).groupby(level=0).std()
 
     total_mean_exp = total_mean_exp.rename(columns={"gen": "Generation", "best": "Avg_Maximum_Fitness",
                                                     "mean": "Avg_Mean_Fitness"})
@@ -87,35 +87,39 @@ def pretty_generation_plotting(dir_filepath, enemy):
     fig.write_image(dir_filepath + '/generation_fitness.png')
     # fig.show()
 
-def best_solution_boxplots(best_genomes1,best_genomes2, enemy):
+
+def best_solution_boxplots(best_genomes1, best_genomes2, enemy):
     """
     making three boxplots for each enemy, each comparing the individual gain for the two algorithms
     for the best solution of each tested 5 times
 
     """
+
     genomes1 = pd.read_csv(best_genomes1)
     genomes2 = pd.read_csv(best_genomes2)
     genomes1["Individual Gain"] = genomes1["player_health"] - genomes1["enemy_health"]
     genomes2["Individual Gain"] = genomes2["player_health"] - genomes2["enemy_health"]
     genomes1["Algorithm"] = "Algorithm 1"
     genomes2["Algorithm"] = "Algorithm 2"
-       
+
     to_keep = ["Algorithm", "Individual Gain"]
     for col in genomes1.columns:
         if col not in to_keep:
             genomes1.drop(col, axis=1, inplace=True)
             genomes2.drop(col, axis=1, inplace=True)
     genomes = pd.concat([genomes1, genomes2], axis=0)
-   
-    fig = px.box(genomes, x="Algorithm", y=genomes["Individual Gain"], title = f"Comparison of Best Individual Gain for Enemy {enemy}")
+
+    fig = px.box(genomes, x="Algorithm", y=genomes["Individual Gain"],
+                 title=f"Comparison of Best Individual Gain for Enemy {enemy}")
+    #fig.write_image(dir_filepath + '/generation_fitness.png')
     fig.show()
 
-
-# enemies = [2, 7, 8]
+# enemies = [2, 7, 8
+# ]
 # for i in enemies:
 #    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
 #    pretty_generation_plotting(filepath, i)
 
-#dir_files = 'NEAT_ENEMY_2'
-#average_experiment_gens(dir_files)
-#pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
+# dir_files = 'NEAT_ENEMY_2'
+# average_experiment_gens(dir_files)
+# pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
