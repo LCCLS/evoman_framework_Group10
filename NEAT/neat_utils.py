@@ -14,7 +14,7 @@ def average_experiment_gens(root_dir):
     #exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt", index_col=False)
     #exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt", index_col=False)
     #exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt", index_col=False)
-    e#xp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt", index_col=False)
+    #exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt", index_col=False)
     #exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt", index_col=False)
     #exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt", index_col=False)
     #exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt", index_col=False)
@@ -120,6 +120,6 @@ def best_solution_boxplots(best_genomes1, best_genomes2, enemy):
 #    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
 #    pretty_generation_plotting(filepath, i)
 
-# dir_files = 'NEAT_ENEMY_2'
-# average_experiment_gens(dir_files)
-# pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
+dir_files = 'NEAT_ENEMY_2'
+average_experiment_gens(dir_files)
+pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
