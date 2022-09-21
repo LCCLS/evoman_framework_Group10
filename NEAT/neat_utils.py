@@ -120,6 +120,6 @@ def best_solution_boxplots(best_genomes1, best_genomes2, enemy):
 #    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
 #    pretty_generation_plotting(filepath, i)
 
-dir_files = 'NEAT_ENEMY_2'
-average_experiment_gens(dir_files)
-pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
+#dir_files = 'NEAT_ENEMY_2'
+#average_experiment_gens(dir_files)
+#pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
