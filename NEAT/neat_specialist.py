@@ -40,9 +40,9 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
 
         fit = gamma * (100 - e) + alpha * p
         exp_f = 8.7483 * (1.0247 ** fit)
-
-        max_f = 8.7483 * (1.0247 ** 100)
-        min_f = 8.7483 * (1.0247 ** 0)
+        #  EXP FUNCTION - 8.7483 * (1.0247 ** fit)
+        max_f = 2 ** 100
+        min_f = 2 ** 0
         norm_fit = (exp_f - min_f) / (max_f - min_f) * 100
 
         final_fit = norm_fit - np.log(t)
@@ -121,7 +121,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(5))
 
-    winner = pop.run(eval_genomes, 30)
+    winner = pop.run(eval_genomes, 500) # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -196,7 +196,6 @@ if __name__ == '__main__':
             if not os.path.exists(f"{experiment_name}/EXP_{i}"):
                 os.makedirs(f"{experiment_name}/EXP_{i}")
 
-            n_hidden_neurons = 10
             fitness_gens = []
             fitness_max = []
             fitness_std = []
