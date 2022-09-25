@@ -5,13 +5,13 @@ import pickle
 import sys
 import time
 import pandas as pd
+from csv import writer
 
 sys.path.insert(0, 'evoman')
 
-from csv import writer
 from environment import Environment
-from neat_controller import NeatController
 from neat_utils import *
+from neat_controller import NeatController
 
 
 def simulation(env, x):
@@ -22,7 +22,7 @@ def simulation(env, x):
     return f
 
 
-def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
+def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='default'):
     """
     this is a custom function with default keyword parameters, change these for experiment
 
@@ -31,27 +31,25 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='custom_fitness'):
     """
 
     if mode == 'default':
-        f, p, e, t = env.play(pcont=x, ffunction='linear')
+        f, p, e, t = env.play(pcont=x, fitness_function='default')
         return f
 
-    elif mode == 'exp_fitness':
+    elif mode == 'exponential':
 
-        f, p, e, t = env.play(pcont=x, ffunction='exponential')
+        f, p, e, t = env.play(pcont=x, fitness_function='exponential')
 
         fit = gamma * (100 - e) + alpha * p
         exp_f = 8.7483 * (1.0247 ** fit)
-        #  EXP FUNCTION - 8.7483 * (1.0247 ** fit)
-        max_f = 2 ** 100
-        min_f = 2 ** 0
+        max_f = 8.7483 * (1.0247 ** 100)
+        min_f = 8.7483 * (1.0247 ** 0)
         norm_fit = (exp_f - min_f) / (max_f - min_f) * 100
 
         final_fit = norm_fit - np.log(t)
         return final_fit
 
     elif mode == 'final_run':
-        f, p, e, t = env.play(pcont=x, ffunction='linear')
-
-        return f, p, e, t
+        f, p, e, t = env.play(pcont=x, fitness_function='default')
+        return p, e
 
     else:
         raise KeyError("This mode of custom function does not exist.")
@@ -62,24 +60,19 @@ def eval_genomes(genomes, config):
     runs the evolution for n generations and saves the mean, std, and max fitness of each generation to the EXP_ file.
     - the config file needs to be passed into the function as a parameter.
     """
-    fitness_dict = {'best': 0, 'mean': 0, }
     generation = []
     global gen
 
     for genome_id, genome in genomes:
         genome.fitness = 0
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exponential')
 
-        # DEFAULT EXPERIMENT LINEAR FITNESS  --> use mode:'default'
-        # EXPONENTIAL EXPERIMENT FITNESS  --> use mode:'exp_fitness'
-        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exp_fitness')  # change the mode
-        # parameter here
+        #  WE TRAIN ON THE EXPERIMENTAL FITNESS FUNCTION BUT EVALUATE ON THE DEFAULT FITNESS FUNCTION
         generation.append(genome.fitness)
 
     fitness_gens.append(np.mean(generation))
     fitness_max.append(np.max(generation))
     fitness_std.append(np.std(generation))
-    fitness_dict['best'] = np.max(generation)
-    fitness_dict['mean'] = np.mean(generation)
 
     #  saving experiment information
     with open(f"{experiment_name}/EXP_{i}" + "/results.txt", "a") as f:
@@ -87,14 +80,7 @@ def eval_genomes(genomes, config):
         if gen == 0:
             f.write("gen,best,mean,std")
 
-        f.write(f"\n{gen},"
-                + str((fitness_max[-1]))
-                + ","
-                + str((fitness_gens[-1]))
-                + ","
-                + str((fitness_std[-1]))
-                )
-
+        f.write(f"\n{gen}, {str((fitness_max[-1]))}, {str((fitness_gens[-1]))}, {str((fitness_std[-1]))}")
         gen += 1
 
 
@@ -119,9 +105,9 @@ def run():
 
     pop.add_reporter(neat.StdOutReporter(True))
     pop.add_reporter(stats)
-    pop.add_reporter(neat.Checkpointer(5))
+    pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 500) # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
+    winner = pop.run(eval_genomes, 50)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -129,7 +115,7 @@ def run():
         pickle.dump(winner, f)
 
 
-def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
+def run_best_genome(env, dir_path="NEAT_ENEMY_2/EXP_1"):
     """
     loads the best genome for each exxperiment and performs 10 games on it and averages the results
     returns: saves the averaged resutls in the performance file related to the experiment
@@ -151,29 +137,27 @@ def run_best_genome(env, dir_path="NEAT_implementation_1/EXP_1"):
             f_object.close()
 
         print(f"""
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %% Best Genome run {trial}completed. Saved files to EXP_performance. %% 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% Best Genome run {trial} completed. Saved files to EXP_performance. %% 
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         """)
 
 
 if __name__ == '__main__':
 
+    #  PARAMETERS  #
+    all_enemies = [2, 5, 8]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
+    RUNS = 2
+    N_runs = RUNS + 1  # don't change this parameter
+    N_trials = 5
+
     headless = True
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    all_enemies = [2]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
     for enemy in all_enemies:
 
-        #  PARAMETERS  #
-        experiment_name = f"NEAT/NEAT_ENEMY_{enemy}"
-
-        #  Change RUNS for the number of repetitions
-        RUNS = 1
-        N_runs = RUNS + 1  # don't change this parameter
-        N_trials = 5
-
+        experiment_name = f"NEAT_ENEMY_{enemy}"
         if not os.path.exists(experiment_name):
             os.makedirs(experiment_name)
 
