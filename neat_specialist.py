@@ -88,6 +88,8 @@ def eval_genomes(genomes, config):
 
         f.write(f"\n{gen}, {str((fitness_max[-1]))}, {str((fitness_gens[-1]))}, {str((fitness_std[-1]))}")
 
+    gen += 1
+
 
 def run():
     """
@@ -112,7 +114,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 15)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
+    winner = pop.run(eval_genomes, 50)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -151,8 +153,8 @@ def run_best_genome(env, dir_path):
 if __name__ == '__main__':
 
     #  PARAMETERS  #
-    all_enemies = [2]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
-    RUNS = 3
+    all_enemies = [5]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
+    RUNS = 5
     N_runs = RUNS + 1  # don't change this parameter
     N_trials = 5
 
