@@ -47,13 +47,14 @@ def average_experiment_gens(root_dir):
     total_mean_exp.to_csv(f"{root_dir}/EXP_AVERAGE/results.txt")
 
 
-def generation_line_plot(directory, enemy=None):
+def generation_line_plot(directory):
     """
     plotting the fitness per generation for the best and the mean values per generation
     the values are averaged using the average_experiment_gen. the standard deviations for mean and max are the
     standard deviation across these 10 runs
     """
-    file = directory + f'NEAT_ENEMY_{enemy}/EXP_AVERAGE/results.txt'
+    file = directory + '/EXP_AVERAGE/results.txt'
+    enemy = int(directory[-1])
     generations = pd.read_csv(file)
 
     fig = go.Figure([
@@ -191,9 +192,6 @@ def best_solution_boxplots(directory1, directory2, enemy=None):
         os.makedirs(f"EXPERIMENT RESULTS")
 
     fig.write_image(f"EXPERIMENT RESULTS/INDIVIDUAL_GAIN_E{enemy}.png")
-
-    #fig.write_image(f'/ENEMY_{enemy}_boxplots.png')
-
     # fig.show()
 
 
