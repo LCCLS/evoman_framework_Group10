@@ -47,13 +47,13 @@ def average_experiment_gens(root_dir):
     total_mean_exp.to_csv(f"{root_dir}/EXP_AVERAGE/results.txt")
 
 
-def generation_line_plot(dir_filepath):
+def generation_line_plot(directory, enemy=None):
     """
     plotting the fitness per generation for the best and the mean values per generation
     the values are averaged using the average_experiment_gen. the standard deviations for mean and max are the
     standard deviation across these 10 runs
     """
-    file = dir_filepath + '/EXP_AVERAGE/results.txt'
+    file = directory + f'NEAT_ENEMY_{enemy}/EXP_AVERAGE/results.txt'
     generations = pd.read_csv(file)
 
     fig = go.Figure([
@@ -119,13 +119,16 @@ def generation_line_plot(dir_filepath):
     fig.update_layout(
         yaxis_title='Fitness',
         xaxis_title='Generation',
-        title='Average Mean and Maximum Fitness',
+        title=f'Average Mean and Maximum Fitness values per Generation for Enemy {enemy}',
         hovermode="x",
         legend_title_text='Fitness Metrics',
 
     )
 
-    fig.write_image(dir_filepath + '/generation_fitness_line.png')
+    if not os.path.exists(f"EXPERIMENT RESULTS"):
+        os.makedirs(f"EXPERIMENT RESULTS")
+
+    fig.write_image(f"EXPERIMENT RESULTS/GENERATION_FITNESS_E{enemy}.png")
     #  fig.show()
 
 
@@ -156,32 +159,40 @@ def pretty_generation_plotting(dir_filepath, enemy):
     # fig.show()
 
 
-def best_solution_boxplots(alg1_rootdir, alg2_rootdir):
+def best_solution_boxplots(directory1, directory2, enemy=None):
+
     """
     making three boxplots for each enemy, each comparing the individual gain for the two algorithms
     for the best solution of each tested 5 times
 
+    ###
+    updated function works for all three enemies if the root directory is passed in.
+    ###
+
     """
-    enemies = [2]  # enemies should be 2, 5, 8
-    N_RUNS = 4
-    for enemy in enemies:
+    gains = pd.DataFrame()
 
-        gains = pd.DataFrame(columns=["Algorithm 1", "Algorithm 2"])
+    for run in range(1, 4):  # the range value has to be updated in accordance to N_runs in neat_spec.
 
-        for run in range(1, N_RUNS):
+        enemy_run_filepath = f"NEAT_ENEMY_{enemy}/EXP_{run}_performance/best_genome_performance.csv"
 
-            genomes1 = pd.read_csv(f"{alg1_rootdir}/NEAT_ENEMY_{enemy}/EXP_{run}_performance/best_genome_performance.csv")  # algorithm1
-            genomes2 = pd.read_csv(f"{alg2_rootdir}/NEAT_ENEMY_{enemy}/EXP_{run}_performance/best_genome_performance.csv")  # algorithm 2
+        genomes1 = pd.read_csv(f"{directory1}/{enemy_run_filepath}", usecols=['Individual Gain'])
+        genomes1['Algorithm'] = ['Algorithm1'] * len(genomes1['Individual Gain'].values)
 
-            gains = pd.concat([genomes1, genomes2], axis=0)
-            gains = gains.drop(['Trial'], axis=1)
-            #gains["Algorithm 1"] += genomes1['Individual Gain'].mean()
-            #gains["Algorithm 2"] += genomes2['Individual Gain'].mean()
+        genomes2 = pd.read_csv(f"{directory2}/{enemy_run_filepath}", usecols=['Individual Gain'])
+        genomes2['Algorithm'] = ['Algorithm2'] * len(genomes2['Individual Gain'].values)
 
-        fig = px.box(gains, x="Algorithm", y=gains["Individual Gain"],
-                     title=f"Comparison of Best Individual Gain for Enemy {enemy}")
-        fig.write_image(f'/ENEMY_{enemy}_boxplots.png')
+        gains = pd.concat([genomes1, genomes2], axis=0)
 
+    fig = px.box(gains, x="Algorithm", y=gains["Individual Gain"],
+                 title=f"Comparison of Best Individual Gain for Enemy {enemy} per Algorithm ")
+
+    if not os.path.exists(f"EXPERIMENT RESULTS"):
+        os.makedirs(f"EXPERIMENT RESULTS")
+
+    fig.write_image(f"EXPERIMENT RESULTS/INDIVIDUAL_GAIN_E{enemy}.png")
+
+    #fig.write_image(f'/ENEMY_{enemy}_boxplots.png')
 
     # fig.show()
 
@@ -192,11 +203,11 @@ def best_solution_boxplots(alg1_rootdir, alg2_rootdir):
 #    filepath = f"../NEAT_ENEMY_{i}/EXP_1"  # practice filepath
 #    pretty_generation_plotting(filepath, i)
 
-dir_files = 'finished_experiments/EXP_EXPERIMENT'
-dir_file2 = 'finished_experiments/LINEAR_EXPERIMENT'
-#average_experiment_gens(dir_files)
-#average_experiment_gens(dir_file2)
-#generation_line_plot(dir_files)
-best_solution_boxplots(dir_files, dir_file2)
+#dir_files = 'finished_experiments/EXP_EXPERIMENT'
+#dir_file2 = 'finished_experiments/LINEAR_EXPERIMENT'
+# average_experiment_gens(dir_files)
+# average_experiment_gens(dir_file2)
+# generation_line_plot(dir_files)
+#best_solution_boxplots(dir_files, dir_file2, enemy=2)
 
 # pretty_generation_plotting(dir_files + "/EXP_AVERAGE", 2)
