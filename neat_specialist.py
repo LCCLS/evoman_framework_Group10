@@ -28,6 +28,12 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='default'):
 
     BE CAREFUL WITH THE ffunction parameter, this is passed into the environment class and was recently instantiated
     --> may run into troubles but if done correctly, the logs should print the correct fitness values
+
+    ###
+
+    WHAT IF WE DO A WEIGHTED AVERAGE OF FITNESS AND INDIVIDUAL GAIN?
+
+    ###
     """
 
     if mode == 'default':
@@ -49,7 +55,7 @@ def custom_fitness(env, x, gamma=0.9, alpha=0.1, mode='default'):
 
     elif mode == 'final_run':
         f, p, e, t = env.play(pcont=x, fitness_function='default')
-        return p, e
+        return p - e
 
     else:
         raise KeyError("This mode of custom function does not exist.")
@@ -81,7 +87,6 @@ def eval_genomes(genomes, config):
             f.write("gen,best,mean,std")
 
         f.write(f"\n{gen}, {str((fitness_max[-1]))}, {str((fitness_gens[-1]))}, {str((fitness_std[-1]))}")
-        gen += 1
 
 
 def run():
@@ -107,7 +112,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 50)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
+    winner = pop.run(eval_genomes, 15)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -115,7 +120,7 @@ def run():
         pickle.dump(winner, f)
 
 
-def run_best_genome(env, dir_path="NEAT_ENEMY_2/EXP_1"):
+def run_best_genome(env, dir_path):
     """
     loads the best genome for each exxperiment and performs 10 games on it and averages the results
     returns: saves the averaged resutls in the performance file related to the experiment
@@ -125,15 +130,15 @@ def run_best_genome(env, dir_path="NEAT_ENEMY_2/EXP_1"):
 
     for trial in range(5):
 
-        total_performance = list(custom_fitness(env, genome, mode='final_run'))
+        total_performance = custom_fitness(env, genome, mode='final_run')
 
         with open(f"{dir_path}_performance" + "/best_genome_performance.csv", 'a') as f_object:
             writer_object = writer(f_object)
 
             if trial == 0:
-                writer_object.writerow(['fitness', 'player_health', 'enemy_health', 'time'])
+                writer_object.writerow(['Trial', 'Individual Gain'])
 
-            writer_object.writerow(total_performance)
+            writer_object.writerow([trial, total_performance])
             f_object.close()
 
         print(f"""
@@ -146,8 +151,8 @@ def run_best_genome(env, dir_path="NEAT_ENEMY_2/EXP_1"):
 if __name__ == '__main__':
 
     #  PARAMETERS  #
-    all_enemies = [2, 5, 8]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
-    RUNS = 2
+    all_enemies = [2]  # experiments for enemies: 2, 7, 8 # otherwise we could try 2, 5, 8
+    RUNS = 3
     N_runs = RUNS + 1  # don't change this parameter
     N_trials = 5
 
@@ -195,8 +200,8 @@ if __name__ == '__main__':
             #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
             run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i}")
 
-        average_experiment_gens(f"{experiment_name}")
-        pretty_generation_plotting(f"{experiment_name}/EXP_AVERAGE", enemy)
+        #  average_experiment_gens(f"{experiment_name}")
+        #  generation_line_plot(experiment_name)
 
         print(f"""
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
