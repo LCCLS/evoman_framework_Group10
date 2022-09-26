@@ -71,7 +71,7 @@ def eval_genomes(genomes, config):
 
     for genome_id, genome in genomes:
         genome.fitness = 0
-        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exponential')
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default')
 
         #  WE TRAIN ON THE EXPERIMENTAL FITNESS FUNCTION BUT EVALUATE ON THE DEFAULT FITNESS FUNCTION
         generation.append(genome.fitness)
