@@ -30,7 +30,7 @@ def test_best_genome(experiment_name):
 
     env.state_to_log()
 
-    with open(experiment_name + "/EXP_1/best_genome.txt", "rb") as f:
+    with open(experiment_name + "/EXP_7/best_genome.txt", "rb") as f:
         genome = pickle.load(f)
 
     total_performance = list(env.play(pcont=genome))
@@ -50,5 +50,10 @@ def test_best_genome(experiment_name):
 
 
 if __name__ == '__main__':
-    exp_name = 'Linear_ENEMY_2'
+
+    headless = False
+    if headless:
+        os.environ["SDL_VIDEODRIVER"] = "dummy"
+
+    exp_name = 'finished_experiments/LIN_NEAT_ENEMY_2'
     test_best_genome(exp_name)
