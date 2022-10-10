@@ -158,51 +158,49 @@ if __name__ == '__main__':
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    for enemy in all_enemies:
+    experiment_name = f"NEAT_ENEMY"
+    if not os.path.exists(experiment_name):
+        os.makedirs(experiment_name)
 
-        experiment_name = f"NEAT_ENEMY_{enemy}"
-        if not os.path.exists(experiment_name):
-            os.makedirs(experiment_name)
+    env = Environment(
+        experiment_name=experiment_name,
+        enemies=all_enemies,
+        playermode="ai",
+        player_controller=NeatController(),
+        enemymode="static",
+        level=2,
+        contacthurt='player',
+        speed="fastest",
+        multiplemode="yes",
+        randomini="yes",
+    )
 
-        env = Environment(
-            experiment_name=experiment_name,
-            enemies=[enemy],
-            playermode="ai",
-            player_controller=NeatController(),
-            enemymode="static",
-            level=2,
-            contacthurt='player',
-            speed="fastest",
-            multiplemode="no",
-            randomini="yes",
-        )
+    env.state_to_log()
 
-        env.state_to_log()
+    for i in range(1, N_runs + 1):
+        if not os.path.exists(f"{experiment_name}/EXP_{i}"):
+            os.makedirs(f"{experiment_name}/EXP_{i}")
 
-        for i in range(1, N_runs + 1):
-            if not os.path.exists(f"{experiment_name}/EXP_{i}"):
-                os.makedirs(f"{experiment_name}/EXP_{i}")
+        fitness_gens = []
+        fitness_max = []
+        fitness_std = []
+        gen = 0
 
-            fitness_gens = []
-            fitness_max = []
-            fitness_std = []
-            gen = 0
+        run()
 
-            run()
+    for i in range(1, N_runs + 1):
 
-        for i in range(1, N_runs + 1):
+        if not os.path.exists(f"{experiment_name}/EXP_{i}_performance"):
+            os.makedirs(f"{experiment_name}/EXP_{i}_performance")
 
-            if not os.path.exists(f"{experiment_name}/EXP_{i}_performance"):
-                os.makedirs(f"{experiment_name}/EXP_{i}_performance")
-
-            #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
-            run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i}")
+        #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
+        run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i}")
 
         #  average_experiment_gens(f"{experiment_name}")
         #  generation_line_plot(experiment_name)
 
-        print(f"""
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %% ENEMY {enemy}: ALL TRIALS PLAYED. ALL FILES SAVED. %% 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        """)
+    print(f"""
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ENEMY : ALL TRIALS PLAYED. ALL FILES SAVED. %% 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    """)
