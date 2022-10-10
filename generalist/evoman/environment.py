@@ -358,18 +358,6 @@ class Environment(object):
         if self.level < 1 or self.level > 3:
             self.print_logs("MESSAGE: 'level' chosen is out of recommended (tested).")
 
-            # default fitness function for single solutions
-    def exponential_single(self):
-
-        fit = 0.9 * (100 - self.get_enemylife()) + 0.1 * self.get_playerlife()
-        exp_f = 8.7483 * (1.0247 ** fit)
-        max_f = 8.7483 * (1.0247 ** 100)
-        min_f = 8.7483 * (1.0247 ** 0)
-        norm_fit = (exp_f - min_f) / (max_f - min_f) * 100
-
-        final_fit = norm_fit - numpy.log(self.get_time())
-        return final_fit
-
     def fitness_single(self):
         return 0.9 * (100 - self.get_enemylife()) + 0.1 * self.get_playerlife() - numpy.log(self.get_time())
 
@@ -390,7 +378,7 @@ class Environment(object):
         return self.time
 
     # runs game for a single enemy
-    def run_single(self, enemyn, pcont, econt, ffunction=None):
+    def run_single(self, enemyn, pcont, econt):
 
         # sets controllers
         self.pcont = pcont
@@ -470,16 +458,13 @@ class Environment(object):
             pygame.draw.line(self.screen, (194, 118, 55), [590, 45], [695 - vbar, 45], 5)
             pygame.draw.line(self.screen, (0, 0, 0), [590, 49], [695, 49], 2)
 
-            if ffunction == 'default':
-                fitness = self.fitness_single()
-            elif ffunction == 'exponential':
-                fitness = self.exponential_single()
+            fitness = self.fitness_single()
 
             # returns results of the run
             def return_run():
-                self.print_logs("RUN: run status: enemy: " + str(self.enemyn) + "; fitness function: " + str(ffunction)
+                self.print_logs("RUN: run status: enemy: " + str(self.enemyn) + "; algorithm: NSGA2 "
                                 + "; fitness: " + str(fitness) + "; player life: " + str(self.player.life) +
-                                "; enemy life: " + str(self.enemy.life) + "; time: " + str(self.time),)
+                                "; enemy life: " + str(self.enemy.life) + "; time: " + str(self.time), )
 
                 return fitness, self.player.life, self.enemy.life, self.time
 
@@ -555,7 +540,7 @@ class Environment(object):
 
         vfitness, vplayerlife, venemylife, vtime = [], [], [], []
         for e in self.enemies:
-            fitness, playerlife, enemylife, time = self.run_single(e, pcont, econt, ffunction='default')
+            fitness, playerlife, enemylife, time = self.run_single(e, pcont, econt)
             vfitness.append(fitness)
             vplayerlife.append(playerlife)
             venemylife.append(enemylife)
@@ -569,9 +554,9 @@ class Environment(object):
         return vfitness, vplayerlife, venemylife, vtime
 
     # checks objective mode
-    def play(self, pcont="None", econt="None", fitness_function=None):
+    def play(self, pcont="None", econt="None"):
 
         if self.multiplemode == "yes":
             return self.multiple(pcont, econt)
         else:
-            return self.run_single(self.enemies[0], pcont, econt, ffunction=fitness_function)
+            return self.run_single(self.enemies[0], pcont, econt)
