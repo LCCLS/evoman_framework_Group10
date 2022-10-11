@@ -3,25 +3,29 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import os
 import plotly.graph_objs as go
+import plotly.io as pio
+
 
 
 def group_by_mean(root_dir, mode=None):
     exp1 = pd.read_csv(f"{root_dir}/EXP_1/results.txt")
     exp2 = pd.read_csv(f"{root_dir}/EXP_2/results.txt")
-    exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt")
-    exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt")
-    exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt")
-    exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt")
-    exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt")
-    exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt")
-    exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt")
-    exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt")
+    # exp3 = pd.read_csv(f"{root_dir}/EXP_3/results.txt")
+    # exp4 = pd.read_csv(f"{root_dir}/EXP_4/results.txt")
+    # exp5 = pd.read_csv(f"{root_dir}/EXP_5/results.txt")
+    # exp6 = pd.read_csv(f"{root_dir}/EXP_6/results.txt")
+    # exp7 = pd.read_csv(f"{root_dir}/EXP_7/results.txt")
+    # exp8 = pd.read_csv(f"{root_dir}/EXP_8/results.txt")
+    # exp9 = pd.read_csv(f"{root_dir}/EXP_9/results.txt")
+    # exp10 = pd.read_csv(f"{root_dir}/EXP_10/results.txt")
 
     if mode == 'mean':
-        return pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
+        # return pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).mean()
+        return pd.concat([exp1, exp2]).groupby(level=0).mean()
 
     elif mode == 'std':
-        return pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).std()
+        # return pd.concat([exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10]).groupby(level=0).std()
+        return pd.concat([exp1, exp2]).groupby(level=0).std()
 
 
 def average_experiment_gens(root_dir):
@@ -128,7 +132,7 @@ def generation_line_plot(directory, function=None):
 
     if not os.path.exists(f"EXPERIMENT RESULTS"):
         os.makedirs(f"EXPERIMENT RESULTS")
-
+    # pio.kaleido.scope.chromium_args = tuple([arg for arg in pio.kaleido.scope.chromium_args if arg != "--disable-dev-shm-usage"])
     fig.write_image(f"EXPERIMENT RESULTS/GENERATION_FITNESS_E{enemy}_{function}.png")
     #  fig.show()
 

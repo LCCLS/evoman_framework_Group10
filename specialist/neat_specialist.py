@@ -4,9 +4,10 @@ import pickle
 import sys
 from csv import writer
 
+
 sys.path.insert(0, 'evoman')
 
-from environment import Environment
+from evoman.environment import Environment
 from neat_utils import *
 from neat_controller import NeatController
 
@@ -68,7 +69,7 @@ def eval_genomes(genomes, config):
 
     for genome_id, genome in genomes:
         genome.fitness = 0
-        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='exponential')
+        genome.fitness = custom_fitness(env, genome, gamma=0.9, alpha=0.1, mode='default')
 
         #  WE TRAIN ON THE EXPERIMENTAL FITNESS FUNCTION BUT EVALUATE ON THE DEFAULT FITNESS FUNCTION
         generation.append(genome.fitness)
@@ -111,7 +112,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 50)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
+    winner = pop.run(eval_genomes, 10)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -150,38 +151,37 @@ def run_best_genome(env, dir_path):
 if __name__ == '__main__':
 
     #  PARAMETERS  #
-    all_enemies = [2, 5, 8]
-    N_runs = 10
+    enemy_sets = [[2, 5, 8], [3,6]]
+    N_runs = 2
     N_trials = 5
 
     headless = True
     if headless:
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    for enemy in all_enemies:
+    for set, enemy_set in enumerate(enemy_sets, start=1):
 
-        experiment_name = f"NEAT_ENEMY_{enemy}"
+        experiment_name = f'GENERALIST_NEAT_ENEMYSET{set}'
         if not os.path.exists(experiment_name):
             os.makedirs(experiment_name)
 
         env = Environment(
             experiment_name=experiment_name,
-            enemies=[enemy],
+            enemies=enemy_set,
             playermode="ai",
             player_controller=NeatController(),
             enemymode="static",
             level=2,
             contacthurt='player',
             speed="fastest",
-            multiplemode="no",
+            multiplemode="yes",
             randomini="yes",
-        )
+            )
 
         env.state_to_log()
 
         for i in range(1, N_runs + 1):
-            if not os.path.exists(f"{experiment_name}/EXP_{i}"):
-                os.makedirs(f"{experiment_name}/EXP_{i}")
+            if not os.path.exists(f"{experiment_name}/EXP_{i}"): os.makedirs(f"{experiment_name}/EXP_{i}")
 
             fitness_gens = []
             fitness_max = []
@@ -198,11 +198,11 @@ if __name__ == '__main__':
             #  5 TRIAL RUNS FOR THE BEST GENOME OF EACH OF THE 10 RUNS
             run_best_genome(env, dir_path=f"{experiment_name}/EXP_{i}")
 
-        #  average_experiment_gens(f"{experiment_name}")
-        #  generation_line_plot(experiment_name)
+            # average_experiment_gens(f"{experiment_name}")
+            # generation_line_plot(experiment_name)
 
-        print(f"""
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %% ENEMY {enemy}: ALL TRIALS PLAYED. ALL FILES SAVED. %% 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        """)
+            print(f"""
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %% GENERALIST ENEMY SET {set} : ALL TRIALS PLAYED. ALL FILES SAVED. %% 
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            """)
