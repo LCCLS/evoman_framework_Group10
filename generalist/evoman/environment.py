@@ -377,6 +377,9 @@ class Environment(object):
     def get_time(self):
         return self.time
 
+    def get_enemies(self):
+        return self.enemies
+
     # runs game for a single enemy
     def run_single(self, enemyn, pcont, econt):
 
@@ -539,6 +542,7 @@ class Environment(object):
     def multiple(self, pcont, econt):
 
         vfitness, vplayerlife, venemylife, vtime = [], [], [], []
+
         for e in self.enemies:
             fitness, playerlife, enemylife, time = self.run_single(e, pcont, econt)
             vfitness.append(fitness)
@@ -546,10 +550,10 @@ class Environment(object):
             venemylife.append(enemylife)
             vtime.append(time)
 
-        vfitness = self.cons_multi(numpy.array(vfitness))
-        vplayerlife = self.cons_multi(numpy.array(vplayerlife))
-        venemylife = self.cons_multi(numpy.array(venemylife))
-        vtime = self.cons_multi(numpy.array(vtime))
+       # vfitness = self.cons_multi(numpy.array(vfitness))
+       # vplayerlife = self.cons_multi(numpy.array(vplayerlife))
+       # venemylife = self.cons_multi(numpy.array(venemylife))
+       # vtime = self.cons_multi(numpy.array(vtime))
 
         return vfitness, vplayerlife, venemylife, vtime
 
