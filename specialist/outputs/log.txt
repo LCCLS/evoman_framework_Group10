@@ -1,0 +1,365 @@
+datetime 09/10/2022 17:33:23:799
+
+Optimization mode:         min
+Number of variables:       2
+Lower boundary:            0
+Upper boundary:            1
+Number of generations:     70
+Population size:           40
+Archive population size:   25
+Crossover probability:     0.5
+Eta:                       3
+Mutation probability:      0.1
+Sigma2:                    0.2
+
+Generation 1
+20 points added to archive
+Tradeoff values    0.34261345921197695 6.450571185073647
+Tradeoff variables 0.34261345921197695 0.5717132868825431
+
+Generation 2
+19 points added to archive
+Tradeoff values    0.2839388400465006 2.6951931106523506
+Tradeoff variables 0.2839388400465006 0.1936521115020593
+
+Generation 3
+13 points added to archive
+Tradeoff values    0.2839388400465006 2.6951931106523506
+Tradeoff variables 0.2839388400465006 0.1936521115020593
+
+Generation 4
+8 points added to archive
+Tradeoff values    0.33881627515836255 2.0733503393776047
+Tradeoff variables 0.33881627515836255 0.13887794804233827
+
+Generation 5
+7 points added to archive
+Tradeoff values    0.28413855397431753 2.1400228774393746
+Tradeoff variables 0.28413855397431753 0.13887794804233827
+
+Generation 6
+13 points added to archive
+Tradeoff values    0.23790987888783724 2.5674980412431827
+Tradeoff variables 0.23790987888783724 0.15187850005897008
+
+Generation 7
+14 points added to archive
+Tradeoff values    0.3153655458017826 2.164096572656915
+Tradeoff variables 0.3153655458017826 0.15181403498604054
+
+Generation 8
+11 points added to archive
+Tradeoff values    0.2828152457865884 2.1118337848220787
+Tradeoff variables 0.2828152457865884 0.13535086808768945
+
+Generation 9
+14 points added to archive
+Tradeoff values    0.7417397351155246 0.6027173247189062
+Tradeoff variables 0.7417397351155246 0.0
+
+Generation 10
+4 points added to archive
+Tradeoff values    0.7669701947415676 0.09447733985781254
+Tradeoff variables 0.7669701947415676 0.0
+
+Generation 11
+4 points added to archive
+Tradeoff values    0.778055339964895 -0.10963026468574366
+Tradeoff variables 0.778055339964895 0.0
+
+Generation 12
+7 points removed from archive
+Tradeoff values    0.7748825363677716 -0.05404445252253676
+Tradeoff variables 0.7748825363677716 0.0
+
+Generation 13
+9 points removed from archive
+Tradeoff values    0.7706878836317597 0.02314959906402636
+Tradeoff variables 0.7706878836317597 0.0
+
+Generation 14
+8 points removed from archive
+Tradeoff values    0.767404459983747 0.08602503763867364
+Tradeoff variables 0.767404459983747 0.0
+
+Generation 15
+7 points removed from archive
+Tradeoff values    0.7590969253463453 0.2517389780773017
+Tradeoff variables 0.7590969253463453 0.0
+
+Generation 16
+7 points removed from archive
+Tradeoff values    0.7573998258971418 0.2863084361283865
+Tradeoff variables 0.7573998258971418 0.0
+
+Generation 17
+12 points removed from archive
+Tradeoff values    0.7573743301055305 0.28682874115187074
+Tradeoff variables 0.7573743301055305 0.0
+
+Generation 18
+1 points removed from archive
+Tradeoff values    0.5820291488136573 0.1479203093001249
+Tradeoff variables 0.5820291488136573 0.0
+
+Generation 19
+6 points removed from archive
+Tradeoff values    0.5820291488136573 0.1479203093001249
+Tradeoff variables 0.5820291488136573 0.0
+
+Generation 20
+6 points removed from archive
+Tradeoff values    0.5820291488136573 0.1479203093001249
+Tradeoff variables 0.5820291488136573 0.0
+
+Generation 21
+3 points removed from archive
+Tradeoff values    0.5820291488136573 0.1479203093001249
+Tradeoff variables 0.5820291488136573 0.0
+
+Generation 22
+5 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 23
+5 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 24
+4 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 25
+9 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 26
+7 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 27
+6 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 28
+8 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 29
+6 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 30
+6 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 31
+7 points removed from archive
+Tradeoff values    0.5740215644874942 0.12037382107485584
+Tradeoff variables 0.5740215644874942 0.0
+
+Generation 32
+9 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 33
+3 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 34
+8 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 35
+2 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 36
+1 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 37
+3 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 38
+4 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 39
+2 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 40
+7 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 41
+7 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 42
+8 points removed from archive
+Tradeoff values    0.5623062356900546 0.12151216193849002
+Tradeoff variables 0.5623062356900546 0.0
+
+Generation 43
+10 points removed from archive
+Tradeoff values    0.5373681301716036 0.27754837784153097
+Tradeoff variables 0.5373681301716036 0.0
+
+Generation 44
+7 points removed from archive
+Tradeoff values    0.5373681301716036 0.27754837784153097
+Tradeoff variables 0.5373681301716036 0.0
+
+Generation 45
+5 points removed from archive
+Tradeoff values    0.5373681301716036 0.27754837784153097
+Tradeoff variables 0.5373681301716036 0.0
+
+Generation 46
+6 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 47
+11 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 48
+7 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 49
+9 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 50
+7 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 51
+7 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 52
+4 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 53
+8 points removed from archive
+Tradeoff values    0.5415453578456723 0.23856743400520897
+Tradeoff variables 0.5415453578456723 0.0
+
+Generation 54
+9 points removed from archive
+Tradeoff values    0.5359293815635848 0.2919767635407391
+Tradeoff variables 0.5359293815635848 0.0
+
+Generation 55
+6 points removed from archive
+Tradeoff values    0.5359293815635848 0.2919767635407391
+Tradeoff variables 0.5359293815635848 0.0
+
+Generation 56
+12 points removed from archive
+Tradeoff values    0.5359293815635848 0.2919767635407391
+Tradeoff variables 0.5359293815635848 0.0
+
+Generation 57
+4 points removed from archive
+Tradeoff values    0.5359293815635848 0.2919767635407391
+Tradeoff variables 0.5359293815635848 0.0
+
+Generation 58
+8 points removed from archive
+Tradeoff values    0.5359293815635848 0.2919767635407391
+Tradeoff variables 0.5359293815635848 0.0
+
+Generation 59
+3 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 60
+11 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 61
+2 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 62
+8 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 63
+7 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 64
+5 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 65
+8 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 66
+9 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 67
+8 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 68
+6 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 69
+4 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+Generation 70
+4 points removed from archive
+Tradeoff values    0.5342911312994766 0.3089910829933134
+Tradeoff variables 0.5342911312994766 0.0
+
+datetime 09/10/2022 17:33:24:108

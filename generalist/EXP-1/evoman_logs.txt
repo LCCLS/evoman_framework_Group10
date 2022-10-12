@@ -1,0 +1,69 @@
+
+
+MESSAGE: Pygame initialized for simulation.
+
+########## Simulation state - INI ###########
+
+# solutions # : EMPTY 
+
+# sensors # : 20
+
+ ------  parameters ------  
+
+# contact hurt (training agent) # : player
+
+multiple mode: yes
+
+enemies list: 2 5
+
+current enemy: 2
+
+player mode: ai
+
+enemy mode: static
+
+level: 2
+
+clock precision: low
+
+inputs coded: no
+
+random initialization: yes
+
+expiration time: 3000
+
+speed: fastest
+
+load player: yes
+
+load enemy: yes
+
+sound: off
+
+overture time: 100
+
+logs: on
+
+save logs: yes
+
+########## Simulation state - END ###########
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 3.260207087820766; player life: 0; enemy life: 90.0; time: 311
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 89.21086100862023; player life: 55.60000000000032; enemy life: 0; time: 572
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 30.213102618633293; player life: 0; enemy life: 60.0; time: 326
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 74.43224472101788; player life: 3.4000000000002344; enemy life: 10.0; time: 1000
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 3.1799170696476384; player life: 0; enemy life: 90.0; time: 337
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 47.393349813801784; player life: 0; enemy life: 40.0; time: 740
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 30.191857510019556; player life: 0; enemy life: 60.0; time: 333
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 86.35987746310026; player life: 27.400000000000254; enemy life: 0; time: 590
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 30.222347676777343; player life: 0; enemy life: 60.0; time: 323
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 88.0348056010023; player life: 44.200000000000294; enemy life: 0; time: 593

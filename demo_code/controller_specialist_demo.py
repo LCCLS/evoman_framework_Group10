@@ -11,7 +11,7 @@ import sys, os
 
 sys.path.insert(0, '../evoman')
 from environment import Environment
-from demo_controller import player_controller
+from demo_code.demo_controller import player_controller
 
 # imports other libs
 import numpy as np

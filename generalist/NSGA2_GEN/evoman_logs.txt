@@ -1,0 +1,89 @@
+
+
+MESSAGE: Pygame initialized for simulation.
+
+########## Simulation state - INI ###########
+
+# solutions # : EMPTY 
+
+# sensors # : 20
+
+ ------  parameters ------  
+
+# contact hurt (training agent) # : player
+
+multiple mode: yes
+
+enemies list: 2 5
+
+current enemy: 2
+
+player mode: ai
+
+enemy mode: static
+
+level: 2
+
+clock precision: low
+
+inputs coded: no
+
+random initialization: yes
+
+expiration time: 3000
+
+speed: fastest
+
+load player: yes
+
+load enemy: yes
+
+sound: off
+
+overture time: 100
+
+logs: on
+
+save logs: yes
+
+########## Simulation state - END ###########
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 12.256996812190518; player life: 0; enemy life: 80.0; time: 312
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 87.65790720182989; player life: 41.80000000000029; enemy life: 0; time: 680
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 39.139213776534135; player life: 0; enemy life: 50.0; time: 351
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 29.37195862382047; player life: 0; enemy life: 60.0; time: 756
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 12.237948617219823; player life: 0; enemy life: 80.0; time: 318
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 87.56838815276816; player life: 39.40000000000028; enemy life: 0; time: 585
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 3.2161748176702627; player life: 0; enemy life: 90.0; time: 325
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 86.48545348121257; player life: 29.20000000000026; enemy life: 0; time: 623
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 3.228558876869984; player life: 0; enemy life: 90.0; time: 321
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 87.0652873091275; player life: 35.800000000000274; enemy life: 0; time: 675
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 30.200907345539473; player life: 0; enemy life: 60.0; time: 330
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 88.60413272989427; player life: 47.8000000000003; enemy life: 0; time: 481
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 21.1888590070233; player life: 0; enemy life: 70.0; time: 334
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 47.128908705389456; player life: 0; enemy life: 40.0; time: 964
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 3.228558876869984; player life: 0; enemy life: 90.0; time: 321
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 87.02545348121257; player life: 34.60000000000027; enemy life: 0; time: 623
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 12.162269552834061; player life: 0; enemy life: 80.0; time: 343
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 84.2642199857577; player life: 10.000000000000231; enemy life: 0; time: 842
+
+RUN: run status: enemy: 2; algorithm: NSGA2 ; fitness: 57.222347676777346; player life: 0; enemy life: 30.0; time: 323
+
+RUN: run status: enemy: 5; algorithm: NSGA2 ; fitness: 56.732244721017885; player life: 6.400000000000233; enemy life: 30.0; time: 1000

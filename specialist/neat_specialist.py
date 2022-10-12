@@ -4,11 +4,14 @@ import pickle
 import sys
 from csv import writer
 
+import os
+
+
 sys.path.insert(0, 'evoman')
 
 from environment import Environment
-from neat_utils import *
-from neat_controller import NeatController
+from specialist.neat_utils import *
+from specialist.neat_controller import NeatController
 
 
 def simulation(env, x):
