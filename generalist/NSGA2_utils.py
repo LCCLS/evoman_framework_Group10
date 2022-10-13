@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from _csv import writer
+import pickle
 
 
 def evaluate(individual, env):
@@ -88,10 +89,12 @@ def write_results_to_files(f_results, problem_name, enemies):
 
         with open(experiment_results_folder + results_file_name, 'w') as f:
             f.write(f"total_max, total_mean, total_std, max_E{enemies[0]}, mean_E{enemies[0]}, std_E{enemies[0]},"
-                    f"max_E{enemies[1]}, mean_E{enemies[1]}, std_E{enemies[1]}, \n")
+                    f"max_E{enemies[1]}, mean_E{enemies[1]}, std_E{enemies[1]}, max_E{enemies[2]}, mean_E{enemies[2]}, "
+                    f"std_E{enemies[2]}, \n")
             f.write(f"{str((f_results[0]))}, {str((f_results[1]))}, {str((f_results[2]))}, "
                     f"{str((f_results[3]))}, {str((f_results[4]))}, {str((f_results[5]))}, "
-                    f"{str((f_results[6]))}, {str((f_results[7]))}, {str((f_results[8]))}, \n")
+                    f"{str((f_results[6]))}, {str((f_results[7]))}, {str((f_results[8]))},"
+                    f"{str((f_results[9]))}, {str((f_results[10]))}, {str((f_results[11]))}, \n")
             f.close()
     else:
         with open(experiment_results_folder + results_file_name, 'a') as f:
@@ -109,12 +112,41 @@ def get_genomes_log(total_F):
     x_mean_total = "{:.8f}".format(np.mean(sum(total_F, [])))
     x_std_total = "{:.8f}".format(np.std(sum(total_F, [])))
 
-    x_max_E2 = "{:.8f}".format(np.min([item[0] for item in total_F]))
-    x_mean_E2 = "{:.8f}".format(np.mean([item[0] for item in total_F]))
-    x_std_E2 = "{:.8f}".format(np.std([item[0] for item in total_F]))
+    x_max_E1 = "{:.8f}".format(np.min([item[0] for item in total_F]))
+    x_mean_E1 = "{:.8f}".format(np.mean([item[0] for item in total_F]))
+    x_std_E1 = "{:.8f}".format(np.std([item[0] for item in total_F]))
 
-    x_max_E5 = "{:.8f}".format(np.min([item[1] for item in total_F]))
-    x_mean_E5 = "{:.8f}".format(np.mean([item[1] for item in total_F]))
-    x_std_E5 = "{:.8f}".format(np.std([item[1] for item in total_F]))
+    x_max_E2 = "{:.8f}".format(np.min([item[1] for item in total_F]))
+    x_mean_E2 = "{:.8f}".format(np.mean([item[1] for item in total_F]))
+    x_std_E2 = "{:.8f}".format(np.std([item[1] for item in total_F]))
 
-    return [x_max_total, x_mean_total, x_std_total, x_max_E2, x_mean_E2, x_std_E2, x_max_E5, x_mean_E5, x_std_E5]
+    x_max_E3 = "{:.8f}".format(np.min([item[2] for item in total_F]))
+    x_mean_E3 = "{:.8f}".format(np.mean([item[2] for item in total_F]))
+    x_std_E3 = "{:.8f}".format(np.std([item[2] for item in total_F]))
+
+    return [x_max_total, x_mean_total, x_std_total, x_max_E1, x_mean_E1, x_std_E1, x_max_E2, x_mean_E2, x_std_E2,
+            x_max_E3, x_mean_E3, x_std_E3]
+
+
+def load_genome(problem_name):
+    with open(f"../Experiments/generalist_experiments/{problem_name}/BG.txt", "rb") as f:
+        genome = pickle.load(f)
+
+    return genome
+
+
+def save_genome(problem_name, winner):
+    with open(f"../Experiments/generalist_experiments/{problem_name}/BG.txt", 'wb') as f:
+        pickle.dump(winner, f)
+
+
+def save_best_genome_result(problem_name, RUN, total_performance, enemies):
+    with open(f"../Experiments/generalist_experiments/{problem_name}/BG_RESULT.txt", 'a') as f_object:
+        writer_object = writer(f_object)
+
+        if RUN == 0:
+            writer_object.writerow(['RUN', f'IG_Enemy{enemies[0]}', f"IG_Enemy{enemies[1]}", f"IG_Enemy{enemies[2]}"])
+
+        writer_object.writerow([f"{RUN}", f"{total_performance[0]}",
+                                f"{total_performance[1]}", f"{total_performance[2]}"])
+        f_object.close()
