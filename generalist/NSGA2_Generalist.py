@@ -1,112 +1,149 @@
 import numpy as np
 import os
-import statistics
 
-from pymoo.core.problem import Problem
 from pymoo.algorithms.moo.nsga2 import NSGA2
-from pymoo.optimize import minimize
 from pymoo.termination import get_termination
+
+from NSGA2_setup import MyOutput, ProblemWrapper
+from NSGA2_utils import write_genomes_to_files, get_genomes_log, write_results_to_files, evaluate, nsga2_multiple
 
 import sys
 
 sys.path.insert(0, 'evoman')
 
-from environment import Environment
 from demo_controller import Controller
+from environment import Environment
 
 
-def simulation(x):
-    """
-    not really needed anymore.
-    """
-    f, p, e, t = env.play(pcont=x)
-    return np.multiply(f, -1)
+class NSGA2_Optimization:
 
+    def __init__(self, enemies, generations, n_var, run_num, pop_size, experiment_name, headless):
 
-def run():
-    """
-    ProblemWrapper(): problem class that inherits from pymoo.Problems with custom _evaluate function
-    evaluates each genome based on individual gain as specified in the fitness function
-    """
+        self.arena = None
+        self.enemies = enemies
+        self.generations = int(generations)
+        self.n_vars = n_var
+        self.xl = -1.
+        self.xu = 1.
+        self.run_num = run_num
+        self.n_obj = len(enemies)
+        self.pop_size = pop_size
+        self.experiment_name = experiment_name
+        self.best_genomes = None
+        self.tournament_enemies = [range(1, 8)]
+        self.headless = headless
 
-    class ProblemWrapper(Problem):
+    def evolve(self):
+        """
+        PROBLEM DEPENDENT IMPLEMENTATION
 
-        def _evaluate(self, designs, out, *args, **kwargs):
+        ProblemWrapper(): problem class that inherits from pymoo.Problems with custom _evaluate function
+        evaluates each genome based on individual gain as specified in the fitness function
+        """
+        if self.headless:
+            os.environ["SDL_VIDEODRIVER"] = "dummy"
+            Environment.multiple = nsga2_multiple
 
-            res = []
-            generation = []
+            self.arena = Environment(
 
-            for design in designs:
-                mul_fit = simulation(design)
-                res.append(mul_fit)
-                generation.append(sum(mul_fit) / len(mul_fit) * - 1)
+                experiment_name=self.experiment_name,
+                enemies=self.enemies,
+                playermode="ai",
+                multiplemode="yes",
+                player_controller=Controller(),
+                enemymode="static",
+                level=2,
+                speed='fastest',
+                logs="off",
+                savelogs="no",
+                sound="off",
+                randomini="yes",
+            )
 
-            fitness_gens.append(np.mean(generation))
-            fitness_max.append(np.max(generation))
-            fitness_std.append(np.std(generation))
+        problem = ProblemWrapper(env=self.arena, n_var=self.n_vars, n_obj=self.n_obj, xl=self.xl, xu=self.xu)
+        algorithm = NSGA2(pop_size=self.pop_size)
+        stop_criterion = get_termination('n_gen', self.generations)
 
-            if len(os.listdir(f"../Experiments/generalist_experiments")) == 0:
-                with open(f"../Experiments/generalist_experiments/results.txt", "a") as f:
+        algorithm.setup(problem, termination=stop_criterion, verbose=True, output=MyOutput())
 
-                    f.write("best,mean,std, \n")
-                    f.write(f"{str((fitness_max[-1]))}, {str((fitness_gens[-1]))}, {str((fitness_std[-1]))}, \n")
-            else:
+        while algorithm.has_next():
+            pop = algorithm.ask()
+            algorithm.evaluator.eval(problem, pop)
+            algorithm.tell(infills=pop)
 
-                with open(f"../Experiments/generalist_experiments/results.txt", "a") as f:
-                    f.write(f"{str((fitness_max[-1]))}, {str((fitness_gens[-1]))}, {str((fitness_std[-1]))}, \n")
+            # ----- save the results to files ----- #
+            f_results = get_genomes_log(algorithm.pop.get("F").tolist())
+            write_results_to_files(f_results, self.experiment_name, self.enemies)
+            # ------------------------------------- #
 
-            out['F'] = np.array(res)
+        # ----- save the genomes to files ----- #
+        self.best_genomes = algorithm.pop.get("X").tolist()
+        write_genomes_to_files(self.best_genomes, self.experiment_name)
+        # ------------------------------------- #
 
-    problem = ProblemWrapper(n_var=int(n_vars), n_obj=int(2), xl=0.0, xu=100.0)
-    algorithm = NSGA2(pop_size=30)
-    stop_criterion = get_termination('n_gen', 50)
-    EVO_results = minimize(
-        problem=problem,
-        algorithm=algorithm,
-        termination=stop_criterion,
-        verbose=True,
-    )
+        # self.best_genome_tournament()
 
-    pop = EVO_results.pop
-    print(pop.get('X'))
-    print(EVO_results.F)
+    def best_genome_tournament(self):
+        """
+        tournament of all pareto-optimal solutions to determine the best performing one.
+        METRIC: individual gain (mean)
+        """
+
+        if self.headless:
+            os.environ["SDL_VIDEODRIVER"] = "dummy"
+            Environment.multiple = nsga2_multiple
+
+            self.arena = Environment(
+
+                experiment_name=self.experiment_name,
+                enemies=self.enemies,
+                playermode="ai",
+                multiplemode="yes",
+                player_controller=Controller(),
+                enemymode="static",
+                level=2,
+                speed='fastest',
+                logs="off",
+                savelogs="no",
+                sound="off",
+                randomini="yes",
+            )
+
+        winner_genome = None
+        winner_performance = 0
+
+        for player_genome in self.best_genomes:
+            f, p, e, t, ig = evaluate(player_genome, self.arena)
+
+            if ig[0] >= winner_performance:
+                winner_genome = player_genome
+
+        write_genomes_to_files(winner_genome, self.experiment_name)
 
 
 if __name__ == '__main__':
 
     #  PARAMETERS  #
-    all_enemies = [2, 5]
+    ENEMIES = [2, 5]
+    GENERATIONS = 2
+    POP_SIZE = 5
+    N_VAR = 265
+    N_RUN = 2
+    N_HIDDEN_NEURONS = 10
+    EXPERIMENT_NAME = f"NSGA2_GEN"
 
-    headless = True
-    if headless:
-        os.environ["SDL_VIDEODRIVER"] = "dummy"
+    if not os.path.exists(EXPERIMENT_NAME):
+        os.makedirs(EXPERIMENT_NAME)
 
-    experiment_name = f"NSGA2_GEN"
-    if not os.path.exists(experiment_name):
-        os.makedirs(experiment_name)
+    for RUN in range(N_RUN):
+        optimizer = NSGA2_Optimization(
+            enemies=ENEMIES,
+            generations=int(GENERATIONS),
+            n_var=N_VAR,
+            run_num=N_RUN,
+            pop_size=POP_SIZE,
+            experiment_name=EXPERIMENT_NAME + f"/RUN_{RUN}",
+            headless=True
+        )
 
-    enemy_env_dict = {}
-
-    env = Environment(
-        experiment_name=experiment_name,
-        enemies=all_enemies,
-        playermode="ai",
-        player_controller=Controller(),
-        enemymode="static",
-        level=2,
-        contacthurt='player',
-        speed="fastest",
-        multiplemode="yes",
-        randomini="yes",
-    )
-
-    env.state_to_log()
-
-    n_hidden_neurons = 10
-    n_vars = int((env.get_num_sensors() + 1) * n_hidden_neurons + (n_hidden_neurons + 1) * 5)
-
-    fitness_gens = []
-    fitness_max = []
-    fitness_std = []
-
-    run()
+        optimizer.evolve()
