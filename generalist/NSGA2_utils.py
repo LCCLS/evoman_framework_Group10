@@ -80,11 +80,9 @@ def write_results_to_files(f_results, problem_name, enemies):
     experiment_results_folder = f"../Experiments/generalist_experiments/{problem_name}"
     results_file_name = "/results.txt"
 
-    # If experiment directory doesn't exist create it
     if not os.path.exists(experiment_results_folder):
         os.makedirs(experiment_results_folder)
 
-    # Write the respective files ( results & genomes )
     if len(os.listdir(experiment_results_folder)) == 0:
 
         with open(experiment_results_folder + results_file_name, 'w') as f:

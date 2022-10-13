@@ -40,7 +40,6 @@ class ProblemWrapper(Problem):
         evaluation metrics
         """
         res = []
-        # generation = []
 
         for design in designs:
             eval_result = evaluate(design, self.ENV)
@@ -49,7 +48,6 @@ class ProblemWrapper(Problem):
             # ind_gains = eval_result[4][0]
             # mul_gains = eval_result[4][1]
             res.append(multiple_fit)
-            # generation.append(sum(multiple_fit) / len(multiple_fit) * - 1)
 
         out['F'] = np.array(res)
 

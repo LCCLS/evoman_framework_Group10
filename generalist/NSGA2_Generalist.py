@@ -114,7 +114,6 @@ class NSGA2_Optimization:
                 winner_performance = ig[0]
 
         if winner_genome is not None:
-            # write_genomes_to_files(np.array(winner_genome), self.experiment_name, tournament=True)
             save_genome(self.experiment_name, winner_genome)
 
     def run_best_genome_five_times(self):
@@ -123,16 +122,19 @@ class NSGA2_Optimization:
         -- runs the best genome of each run 5 times and saves the results in form of individual gain
         """
 
+        print("### TESTING INITIATED. ### \n")
+
         for TESTING in range(5):
-            print(f"{self.experiment_name}, happening.")
-            print(f"TESTING run {TESTING} happening.")
+
+            print(f"---TESTING RUN {TESTING+1}/5 ---\n ")
 
             fighter = load_genome(self.experiment_name)
             f, p, e, t, ig = evaluate(fighter, self.arena)
             ig_list = [element for ig_list in ig[1] for element in ig_list]
-            #ig_performance = f"{ig_list[0]}, {ig_list[1]}, {ig_list[2]}"
+
             save_best_genome_result(self.experiment_name, TESTING, total_performance=ig_list,
                                     enemies=self.enemies)
+        print("### TESTING INITIATED. ### \n")
 
 
 if __name__ == '__main__':
@@ -142,7 +144,7 @@ if __name__ == '__main__':
     GENERATIONS = 40
     POP_SIZE = 70
     N_VAR = 265
-    EXP_RUNS = 1
+    EXP_RUNS = 5
     TEST_RUNS = 5
     N_HIDDEN_NEURONS = 10
     EXPERIMENT_NAME = f"NSGA2_GEN"
