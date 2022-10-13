@@ -112,7 +112,7 @@ def run():
     pop.add_reporter(stats)
     pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 10)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
+    winner = pop.run(eval_genomes, 50)  # max of 500 generations ## CHECK IF CONVERGENCE OCCURS!!!
 
     print(f"\nBest genome:\n{winner}")
 
@@ -151,8 +151,8 @@ def run_best_genome(env, dir_path):
 if __name__ == '__main__':
 
     #  PARAMETERS  #
-    enemy_sets = [[2, 5, 8], [3,6]]
-    N_runs = 2
+    enemy_sets = [[2, 5, 6], [1, 5, 6]]
+    N_runs = 1
     N_trials = 5
 
     headless = True
