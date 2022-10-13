@@ -1,19 +1,13 @@
 import numpy as np
-import os
 import sys
-
-from operator import itemgetter
 
 from pymoo.util.display.column import Column
 from pymoo.util.display.output import Output
 from pymoo.core.problem import Problem
 
 from NSGA2_utils import evaluate
-from NSGA2_utils import nsga2_multiple
 
 sys.path.insert(0, 'evoman')
-
-from environment import Environment
 
 
 class MyOutput(Output):
@@ -58,38 +52,5 @@ class ProblemWrapper(Problem):
             # generation.append(sum(multiple_fit) / len(multiple_fit) * - 1)
 
         out['F'] = np.array(res)
-
-
-class Environment_Setup:
-
-    def __init__(self, controller, enemies, experiment_name, headless):
-        self.env = None
-        self.controller = controller
-        self.enemies = enemies
-        self.experiment_name = experiment_name
-        self.level = 2
-        self.speed = 'fastest'
-
-        Environment.multiple = nsga2_multiple
-
-        # if headless:
-        os.environ["SDL_VIDEODRIVER"] = "dummy"
-
-        self.env = Environment(
-            experiment_name=self.experiment_name,
-            enemies=self.enemies,
-            playermode="ai",
-            multiplemode="yes",
-            player_controller=self.controller,
-            enemymode="static",
-            level=self.level,
-            speed=self.speed,
-            logs="off",
-            savelogs="no",
-            sound="off",
-            randomini="yes",
-        )
-
-        #self.env.state_to_log()
 
 
