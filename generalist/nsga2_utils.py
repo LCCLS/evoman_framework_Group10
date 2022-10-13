@@ -17,6 +17,7 @@ def write_results_to_files(fitness_max, fitness_gens, fitness_std, problem_name,
         os.makedirs(experiment_results_folder)
 
 
+
     ''' Write the respective files ( results & genomes ) '''
     if len(os.listdir(experiment_results_folder)) == 0:
 
