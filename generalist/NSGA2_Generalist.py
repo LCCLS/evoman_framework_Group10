@@ -144,7 +144,7 @@ if __name__ == '__main__':
     GENERATIONS = 40
     POP_SIZE = 70
     N_VAR = 265
-    EXP_RUNS = 5
+    EXP_RUNS = 3
     TEST_RUNS = 5
     N_HIDDEN_NEURONS = 10
     EXPERIMENT_NAME = f"NSGA2_GEN"
