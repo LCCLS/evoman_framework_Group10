@@ -98,7 +98,8 @@ def write_results_to_files(f_results, problem_name, enemies):
         with open(experiment_results_folder + results_file_name, 'a') as f:
             f.write(f"{str((f_results[0]))}, {str((f_results[1]))}, {str((f_results[2]))}, "
                     f"{str((f_results[3]))}, {str((f_results[4]))}, {str((f_results[5]))}, "
-                    f"{str((f_results[6]))}, {str((f_results[7]))}, {str((f_results[8]))}, \n")
+                    f"{str((f_results[6]))}, {str((f_results[7]))}, {str((f_results[8]))}, "
+                    f"{str((f_results[9]))}, {str((f_results[10]))}, {str((f_results[11]))},\n")
             f.close()
 
 
