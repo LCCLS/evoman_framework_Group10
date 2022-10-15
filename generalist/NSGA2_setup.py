@@ -23,7 +23,7 @@ class MyOutput(Output):
         super().update(algorithm)
         total_F = algorithm.pop.get('F').tolist()
 
-        self.x_max.set("{:.8f}".format(float(min(list(map(min, total_F))))))
+        self.x_max.set("{:.8f}".format(float(min(list(map(np.mean, total_F))))))
         self.x_mean.set("{:.8f}".format(np.mean(sum(total_F, []))))
 
 
@@ -42,11 +42,13 @@ class ProblemWrapper(Problem):
         res = []
 
         for design in designs:
-            eval_result = evaluate(design, self.ENV)
-            # mean_fit = eval_result[0][0]
-            multiple_fit = np.array([i * -1 for i in eval_result[0][1]])
-            # ind_gains = eval_result[4][0]
-            # mul_gains = eval_result[4][1]
+            f, p, e, t, ig = evaluate(design, self.ENV)
+
+            singe_ig = np.array(ig[0])
+            singe_fit = np.array(f[0]) * -1
+            multiple_ig = np.array(ig[1])
+            multiple_fit = np.array(f[1]) * -1
+
             res.append(multiple_fit)
 
         out['F'] = np.array(res)

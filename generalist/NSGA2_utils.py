@@ -44,7 +44,7 @@ def nsga2_cons_multi(values):
     -- original function subtracted std from mean which i changed
     """
     values_mean = values.mean()  # - values.std()
-    std = values.std() * -1
+    std = values.std()
     return (values_mean, values, std)
 
 
@@ -107,7 +107,7 @@ def get_genomes_log(total_F):
     """
     get all the result information for each generation
     """
-    x_max_total = "{:.8f}".format(float(min(list(map(min, total_F)))))
+    x_max_total = "{:.8f}".format(float(min(list(map(np.mean, total_F)))))
     x_mean_total = "{:.8f}".format(np.mean(sum(total_F, [])))
     x_std_total = "{:.8f}".format(np.std(sum(total_F, [])))
 
@@ -139,13 +139,12 @@ def save_genome(problem_name, winner):
         pickle.dump(winner, f)
 
 
-def save_best_genome_result(problem_name, RUN, total_performance, enemies):
+def save_best_genome_result(problem_name, RUN, total_performance):
     with open(f"../Experiments/generalist_experiments/{problem_name}/BG_RESULT.txt", 'a') as f_object:
         writer_object = writer(f_object)
 
         if RUN == 0:
-            writer_object.writerow(['RUN', f'IG_Enemy{enemies[0]}', f"IG_Enemy{enemies[1]}", f"IG_Enemy{enemies[2]}"])
+            writer_object.writerow(['RUN', f'Individual Gain'])
 
-        writer_object.writerow([f"{RUN}", f"{total_performance[0]}",
-                                f"{total_performance[1]}", f"{total_performance[2]}"])
+        writer_object.writerow([f"{RUN}", f"{total_performance}"])
         f_object.close()
