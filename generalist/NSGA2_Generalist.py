@@ -122,19 +122,18 @@ class NSGA2_Optimization:
         -- runs the best genome of each run 5 times and saves the results in form of individual gain
         """
 
-        print("### TESTING INITIATED. ### \n")
+        print("\n ### TESTING INITIATED. ### \n")
 
         for TESTING in range(5):
 
-            print(f"---TESTING RUN {TESTING+1}/5 ---\n ")
+            print(f"---TESTING RUN {TESTING+1}/5 --- ")
 
             fighter = load_genome(self.experiment_name)
             f, p, e, t, ig = evaluate(fighter, self.arena)
-            ig_list = [element for ig_list in ig[1] for element in ig_list]
+            #ig_list = [element for ig_list in ig[0] for element in ig_list]
 
-            save_best_genome_result(self.experiment_name, TESTING, total_performance=ig_list,
-                                    enemies=self.enemies)
-        print("### TESTING INITIATED. ### \n")
+            save_best_genome_result(self.experiment_name, TESTING, total_performance=ig[0])
+        print("\n ### TESTING FINISHED. ### \n")
 
 
 if __name__ == '__main__':
